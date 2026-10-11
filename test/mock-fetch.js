@@ -13,7 +13,14 @@ function finalFeed(pk) {
   return f;
 }
 
+const real = (p) => fx('real/' + p);
+
 const ROUTES = [
+  // 実際に保存したページ (2026/10/11 の 巨人-DeNA)
+  [/baseball\.yahoo\.co\.jp\/npb\/schedule\/\?date=2026-10-11/, () => real('yahoo-schedule.html')],
+  [/baseball\.yahoo\.co\.jp\/npb\/game\/2021039475\/(top|score)/, () => real('yahoo-game1-top.html')],
+  [/baseball\.yahoo\.co\.jp\/npb\/game\/2021039475\/stats/, () => real('yahoo-game1-stats.html')],
+  [/baseball\.yahoo\.co\.jp\/npb\/game\/2021039475\/text/, () => real('yahoo-game1-text.html')],
   [/statsapi\.mlb\.com\/api\/v1\/schedule/, () => mlb.schedule],
   [/statsapi\.mlb\.com\/api\/v1\.1\/game\/813001\/feed\/live/, () => mlb.feed],
   [/statsapi\.mlb\.com\/api\/v1\.1\/game\/(\d+)\/feed\/live/, (m) => finalFeed(Number(m[1]))],

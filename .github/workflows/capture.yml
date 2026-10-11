@@ -6,6 +6,11 @@ on:
     paths:
       - dev/capture.mjs
       - .github/workflows/capture.yml
+  # 試合中のページ (速報) の構造を確認するため、試合の時間帯に保存する (日本時間 14:50 / 19:20)
+  # 試合中の試合がなければ何も保存しない。不要になったらこの schedule を消してください。
+  schedule:
+    - cron: '50 5 * * *'
+    - cron: '20 10 * * *'
 permissions:
   contents: write
 jobs:
@@ -16,11 +21,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: node dev/capture.mjs
+      - run: node dev/capture.mjs ${{ github.event_name == 'schedule' && '--live' || '' }}
       - name: commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add test/fixtures/real
-          git commit -m "実ページを保存 (パーサー調整用)" || echo "no changes"
-          git push
+          git diff --cached --quiet && echo "no changes" || git commit -m "実ページを保存 (パーサー調整用) [skip ci]"
+          git push || true

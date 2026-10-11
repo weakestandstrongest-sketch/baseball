@@ -19,7 +19,9 @@ export function gameView(lg, id, tab) {
     const y = window.scrollY;
     const g = game || card;
     let content = '';
+    const missing = game && game.parts && !partsFor(lg, tab).every((p) => game.parts.includes(p));
     if (!game) content = error ? errorBox(error) + (card ? `<p class="hint center"><a href="#/?d=${card.date}">この日の試合一覧へ</a></p>` : '') : skeleton(3, 'sk-block');
+    else if (missing && !error) content = skeleton(3, 'sk-block');
     else if (tab === 'top') content = topTab(game);
     else if (tab === 'live') content = liveTab(game, ui);
     else if (tab === 'plays') content = playsTab(game, ui);
@@ -62,6 +64,8 @@ export function gameView(lg, id, tab) {
       e.preventDefault();
       history.replaceState(null, '', a.getAttribute('href'));
       tab = a.dataset.tab;
+      // NPB はタブに必要なページだけ読むので、足りなければ読み直す
+      if (game && game.parts && !partsFor(lg, tab).every((p) => game.parts.includes(p))) load(false);
       const tabsTop = document.getElementById('tabs').offsetTop;
       render();
       if (window.scrollY > tabsTop) window.scrollTo(0, tabsTop);
@@ -84,7 +88,14 @@ export function gameView(lg, id, tab) {
     stopTimer();
     if (manual) $app.querySelectorAll('#reload, [data-reload]').forEach((b) => b.classList.add('spin'));
     try {
-      game = await api(`/${lg}/game?id=${encodeURIComponent(id)}`);
+      const parts = partsFor(lg, tab);
+      const prev = game;
+      game = await api(`/${lg}/game?id=${encodeURIComponent(id)}${lg === 'npb' ? `&parts=${parts.join(',')}` : ''}`);
+      // 前に読んだ成績・経過は、今回読んでいなければ引き継ぐ
+      if (prev && game.parts) {
+        if (!game.parts.includes('box') && prev.parts && prev.parts.includes('box')) { game.box = prev.box; game.parts.push('box'); }
+        if (!game.parts.includes('plays') && prev.parts && prev.parts.includes('plays')) { game.plays = prev.plays; game.parts.push('plays'); }
+      }
       if (card) for (const k of ['date', 'startTime', 'venue', 'series']) if (!game[k] && card[k]) game[k] = card[k];
       error = null;
       updated = new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -99,6 +110,15 @@ export function gameView(lg, id, tab) {
   render();
   load(false);
 }
+
+function partsFor(lg, tab) {
+  if (lg !== 'npb') return [];
+  if (tab === 'box') return ['box'];
+  if (tab === 'plays' || tab === 'live') return ['plays'];
+  return [];
+}
+
+const condClass = (c) => ({ 絶好調: 'best', 好調: 'good', 普通: 'ok', 不調: 'bad', 絶不調: 'worst' }[c] || 'ok');
 
 function backHref() {
   const p = new URLSearchParams();
@@ -189,8 +209,37 @@ function topTab(g) {
     h += `<div class="card text-card">${esc(g.summary).replace(/\n/g, '<br>')}</div>`;
   }
 
+  // スコアプレー (スポーツナビの得点シーン一覧があればそれを使う)
+  if (g.scoringPlays && g.scoringPlays.length) {
+    h += secTitle('スコアプレー');
+    h += `<div class="card list-card timeline">${g.scoringPlays.map((p) => {
+      const t = p.side === 'home' ? g.home : g.away;
+      const sc = /([^\s\d]{1,3}) (\d+)-(\d+) ([^\s\d]{1,3})/.exec(p.text);
+      return `<div class="li tl"><span class="tl-inn" style="--c:${esc(t.color)}">${esc(p.inning)}</span>
+        <div class="tl-body"><b>${esc(p.player)}</b>${p.situation ? `<small>${esc(p.situation)}</small>` : ''}<span>${esc(sc ? p.text.slice(0, sc.index).trim() : p.text)}</span></div>
+        ${sc ? `<span class="tl-score">${esc(`${sc[1]} ${sc[2]}-${sc[3]} ${sc[4]}`)}</span>` : ''}</div>`;
+    }).join('')}</div>`;
+  }
+
+  if (g.batteries && g.batteries.length) {
+    h += secTitle('バッテリー');
+    h += `<div class="card list-card">${g.batteries.map((b) => `<div class="li hr-row">${badge(b.side ? g[b.side] : { short: b.team.slice(0, 1), color: '#555' }, 'sm')}<span class="bt-text">${esc(b.text)}</span></div>`).join('')}</div>`;
+  }
+
+  for (const hl of g.highlights || []) {
+    h += secTitle(hl.title);
+    h += `<div class="card list-card">${hl.lead ? `<div class="li"><b class="hl-lead">${esc(hl.lead)}</b></div>` : ''}${hl.rows.map(([k, v]) => `<div class="li kv"><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join('')}</div>`;
+  }
+
+  if (g.lineups && (g.lineups.home.length || g.lineups.away.length)) {
+    h += secTitle('スターティングメンバー');
+    const col = (side) => `<div class="lu-col"><div class="lu-head">${badge(g[side], 'xs')}${esc(g[side].name)}</div>${g.lineups[side].map((p) => `
+      <div class="lu-row"><span class="lu-o">${p.order === 'P' ? '先' : esc(p.order)}</span><span class="lu-p">${esc(p.pos)}</span><span class="lu-n">${esc(p.name)}</span>${p.cond ? `<span class="lu-c c-${condClass(p.cond)}">${esc(p.cond)}</span>` : ''}</div>`).join('')}</div>`;
+    h += `<div class="card lineups">${col('away')}${col('home')}</div>`;
+  }
+
   const scoring = [];
-  for (const half of g.plays || []) {
+  for (const half of (g.scoringPlays && g.scoringPlays.length) ? [] : g.plays || []) {
     for (const ab of half.atBats) {
       const ev = ab.events.filter((e) => e.scoring);
       if (ab.scoring || ev.length) {
@@ -210,7 +259,7 @@ function topTab(g) {
     }).join('')}</div>`;
   }
 
-  const info = [['球場', g.venue], ['天気', g.weather], ['開始', g.startTime], [g.away.name, g.away.record], [g.home.name, g.home.record]].filter(([, v]) => v);
+  const info = [['球場', g.venue], ['天気', g.weather], ['開始', g.startTime], ...(g.info || []), [g.away.name, g.away.record], [g.home.name, g.home.record]].filter(([, v]) => v);
   if (info.length) {
     h += secTitle('試合情報');
     h += `<div class="card list-card">${info.map(([k, v]) => `<div class="li kv"><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join('')}</div>`;
@@ -243,7 +292,7 @@ function liveTab(g, ui) {
       ${cur ? '<button class="now" data-liveab="now">現在</button>' : ''}
       <button ${idx >= abs.length - 1 ? 'disabled' : ''} data-liveab="${idx < abs.length - 1 ? abs[idx + 1].key : ''}">次${icon('next', 16)}</button>
     </div>`;
-    h += `<div class="card sit-card">${bso(last ? last.balls : null, last ? last.strikes : null, null)}</div>`;
+    if (last) h += `<div class="card sit-card">${bso(last.balls, last.strikes, null)}</div>`;
     h += `<div class="card mu">
       <div class="mu-p"><span class="mu-l">打者</span><b class="${g.league === 'MLB' && hasJa(ab.batter) ? 'jp' : ''}">${ab.order ? `<em>${ab.order}</em>` : ''}${esc(ab.batter)}</b><small>${esc(ab.situation || '')}</small></div>
       <div class="mu-p"><span class="mu-l">投手</span><b class="${g.league === 'MLB' && hasJa(ab.pitcher) ? 'jp' : ''}">${esc(ab.pitcher || '-')}</b></div>

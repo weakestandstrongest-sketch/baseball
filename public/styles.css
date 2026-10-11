@@ -535,3 +535,22 @@ table.stat td.dec-s { color: #6fe5b4; }
 .matrix td.mx.down b { color: var(--text-2); }
 @media (min-width: 560px) { .boards { grid-template-columns: 1fr 1fr; } }
 .lt .hint { display: flex; align-items: center; gap: 5px; margin: 6px 2px 0; font-size: 12px; }
+
+/* トップ: バッテリー・スタメン */
+.bt-text { font-size: 14px; line-height: 1.6; }
+.hl-lead { font-size: 16px; }
+.li.kv b { font-weight: 600; max-width: 70%; }
+.lineups { display: grid; grid-template-columns: 1fr 1fr; }
+.lu-col + .lu-col { border-left: 1px solid var(--line); }
+.lu-head { display: flex; align-items: center; gap: 6px; padding: 10px 12px; font-weight: 800; font-size: 14px; border-bottom: 1px solid var(--line); background: var(--card-2); }
+.lu-row { display: flex; align-items: center; gap: 6px; padding: 7px 10px; border-top: 1px solid var(--line); font-size: 13.5px; }
+.lu-row:first-of-type { border-top: 0; }
+.lu-o { width: 16px; text-align: center; font-family: var(--num); font-weight: 800; color: var(--text-2); font-size: 12px; }
+.lu-p { width: 16px; color: var(--text-2); font-size: 12px; }
+.lu-n { flex: 1; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lu-c { font-size: 10px; font-weight: 800; padding: 1px 5px; border-radius: 5px; flex: none; }
+.c-best { background: rgba(255, 77, 94, 0.2); color: #ff8a95; }
+.c-good { background: rgba(255, 150, 60, 0.18); color: #ffb27a; }
+.c-ok { background: var(--card-3); color: var(--text-2); }
+.c-bad { background: rgba(77, 141, 255, 0.16); color: #8db5ff; }
+.c-worst { background: rgba(77, 141, 255, 0.28); color: #b3ceff; }

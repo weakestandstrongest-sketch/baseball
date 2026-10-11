@@ -1,5 +1,5 @@
 // アプリ本体はネットワーク優先 + オフライン時はキャッシュ。API はキャッシュしない。
-const CACHE = 'shell-v3';
+const CACHE = 'shell-v4';
 const SHELL = ['./', 'index.html', 'styles.css', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/apple-touch-icon.png',
   ...['app', 'util', 'state', 'teams', 'games', 'game', 'calendar', 'standings', 'stats', 'settings'].map((m) => `js/${m}.js`)];
 

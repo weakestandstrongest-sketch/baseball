@@ -80,6 +80,12 @@ https://<プロジェクト名>.pages.dev/api/npb/debug?url=https://baseball.yah
 解析は主に `lib/npb/common.js` にあり、CSS のクラス名ではなく「計」「打率」「1回表」「◯号」などの文字で項目を探しています。
 この出力を見ながら正規表現や見出しの判定を調整してください。
 
+### 実際のページを保存して確認する
+
+`.github/workflows/capture.yml` (GitHub Actions) が、スポーツナビ / NPB.jp の実ページを `test/fixtures/real/` に保存します。
+GitHub の Actions タブから手動で実行できるほか、試合の時間帯 (日本時間 14:50 / 19:20) に試合中のページがあれば `live/` に保存します。
+不要になったら `capture.yml` の `schedule:` を消してください。
+
 ## ファイル構成
 
 ```
