@@ -1,6 +1,7 @@
 // 試合一覧
 import { $app, api, esc, badge, statusPill, skeleton, emptyState, errorBox, icon, jstToday, addDays, dow, WD, fmtDate, settings, isFav } from './util.js';
 import { state, schedule } from './state.js';
+import { openDatePicker } from './picker.js';
 
 const GROUPS = [
   { key: 'fav', label: 'お気に入り' },
@@ -80,7 +81,6 @@ export function gamesView(q) {
           </div>
         </div>
         <div class="lt-sub">${esc(fmtDate(date, { year: true }))}${date === today ? '<span class="today-tag">今日</span>' : `<a class="today-link" href="${href(today, filter)}">今日に戻る</a>`}</div>
-        <input type="date" id="dateinput" value="${date}" class="hidden-date">
       </header>
       <div class="sticky-bar">
         <nav class="days" id="days">${strip()}</nav>
@@ -93,9 +93,7 @@ export function gamesView(q) {
     const days = document.getElementById('days');
     const on = document.getElementById('day-on');
     if (days && on) days.scrollLeft = on.offsetLeft - days.clientWidth / 2 + on.clientWidth / 2;
-    const input = document.getElementById('dateinput');
-    document.getElementById('pick').onclick = () => { try { input.showPicker(); } catch { input.focus(); input.click(); } };
-    input.onchange = () => { if (input.value) location.hash = href(input.value, filter); };
+    document.getElementById('pick').onclick = () => openDatePicker(date, (d) => { location.hash = href(d, filter); });
   };
 
   async function load() {

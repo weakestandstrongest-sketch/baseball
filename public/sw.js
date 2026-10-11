@@ -1,7 +1,7 @@
 // アプリ本体はネットワーク優先 + オフライン時はキャッシュ。API はキャッシュしない。
-const CACHE = 'shell-v4';
+const CACHE = 'shell-v5';
 const SHELL = ['./', 'index.html', 'styles.css', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/apple-touch-icon.png',
-  ...['app', 'util', 'state', 'teams', 'games', 'game', 'calendar', 'standings', 'stats', 'settings'].map((m) => `js/${m}.js`)];
+  ...['app', 'util', 'state', 'teams', 'games', 'game', 'calendar', 'standings', 'stats', 'settings', 'picker'].map((m) => `js/${m}.js`)];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));

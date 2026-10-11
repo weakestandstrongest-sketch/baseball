@@ -81,7 +81,6 @@ small { color: var(--text-2); font-size: 0.8em; }
 .today-tag { background: rgba(255, 181, 71, 0.15); color: var(--accent); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px; }
 .today-link { color: var(--accent); font-size: 13px; font-weight: 600; }
 .live-cnt { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--live); background: rgba(255, 77, 94, 0.12); padding: 5px 10px; border-radius: 99px; }
-.hidden-date { position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px; right: 30px; top: 60px; }
 .icon-btn {
   width: 38px; height: 38px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
   background: var(--card-2); color: var(--text); border: 1px solid var(--line); flex: none;
@@ -554,3 +553,30 @@ table.stat td.dec-s { color: #6fe5b4; }
 .c-ok { background: var(--card-3); color: var(--text-2); }
 .c-bad { background: rgba(77, 141, 255, 0.16); color: #8db5ff; }
 .c-worst { background: rgba(77, 141, 255, 0.28); color: #b3ceff; }
+
+/* ============ 日付選択シート ============ */
+body.sheet-open { overflow: hidden; }
+.sheet-wrap { position: fixed; inset: 0; z-index: 50; }
+.sheet-bg { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.55); opacity: 0; transition: opacity 0.2s; }
+.sheet {
+  position: absolute; left: 0; right: 0; bottom: 0; max-width: 560px; margin: 0 auto;
+  background: var(--card); border: 1px solid var(--line-2); border-bottom: 0; border-radius: 24px 24px 0 0;
+  padding: 8px 16px calc(16px + var(--safe-bottom)); transform: translateY(100%); transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
+}
+.sheet-wrap.show .sheet-bg { opacity: 1; }
+.sheet-wrap.show .sheet { transform: none; }
+.sheet-grip { width: 38px; height: 5px; border-radius: 3px; background: var(--card-3); margin: 0 auto 10px; }
+.dp-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.dp-head b { font-size: 19px; font-weight: 800; font-family: var(--num); }
+.dp-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.dp-wd { text-align: center; font-size: 12px; font-weight: 700; color: var(--text-2); padding: 4px 0 6px; }
+.dp-wd.sat, .dp-day.sat { color: #6fa8ff; }
+.dp-wd.sun, .dp-day.sun { color: #ff6f9a; }
+.dp-day { height: 44px; border-radius: 12px; font-family: var(--num); font-size: 17px; font-weight: 700; color: var(--text); background: var(--bg-2); position: relative; }
+.dp-day:active { background: var(--card-3); }
+.dp-day.today { box-shadow: inset 0 0 0 1.5px var(--accent); }
+.dp-day.on { background: linear-gradient(160deg, var(--accent), var(--accent-2)); color: var(--accent-ink) !important; box-shadow: 0 4px 14px rgba(255, 150, 60, 0.35); }
+.dp-foot { display: flex; gap: 10px; margin-top: 14px; }
+.dp-btn { flex: 1; padding: 12px; border-radius: 14px; background: var(--accent); color: var(--accent-ink); font-weight: 800; font-size: 15px; }
+.dp-btn.ghost { background: var(--card-2); color: var(--text); border: 1px solid var(--line); }
