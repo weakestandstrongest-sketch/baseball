@@ -3,6 +3,8 @@
 name = "baseball"
 main = "src/worker.js"
 compatibility_date = "2024-09-23"
+# https://baseball.<アカウントのサブドメイン>.workers.dev で公開する
+workers_dev = true
 
 [assets]
 directory = "./public"
