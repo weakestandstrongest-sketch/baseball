@@ -3,7 +3,7 @@
   Referrer-Policy: no-referrer
 /sw.js
   Cache-Control: no-cache
-/app.js
+/js/*
   Cache-Control: no-cache
 /styles.css
   Cache-Control: no-cache

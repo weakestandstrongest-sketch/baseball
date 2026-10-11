@@ -7,13 +7,14 @@ Safari で開いて「ホーム画面に追加」すると、普通のアプリ�
 
 | 画面 | 内容 |
 | --- | --- |
-| 試合一覧 | 日付切り替え、セ / パ / MLB / お気に入りで絞り込み、スコア・イニング・アウト数、勝敗投手・予告先発、試合中は自動更新 |
-| トップ | スコアボード、責任投手 (成績つき)、本塁打、戦評、得点経過、予告先発 |
+| 試合一覧 | 前後 1 週間の日付バー、セ / パ / MLB / お気に入りで絞り込み、スコア・イニング・アウト数、勝敗投手・予告先発、試合中は自動更新 |
+| トップ | チームカラーのスコアボード、責任投手 (成績つき)、本塁打、戦評、得点経過、予告先発 |
 | 速報 | B・S・O、走者 (グラウンド図)、打者・投手 (今日/シーズン成績)、一球ごとの球種・球速・結果、前後の打席に移動。MLB は守備位置と配球 (ストライクゾーン図) も表示 |
 | 経過 | イニングごとの打席結果。タップで一球ごとの内容を展開。新しい順 / 古い順 |
-| 成績 | 打者成績・投手成績 (チーム別) |
-| 順位 | セ・パの順位表、MLB の地区別順位 |
-| 設定 | お気に入りチーム (一覧の先頭に表示)、表示するリーグ、自動更新間隔 |
+| 成績 | 打者成績 (途中出場を含む全員・各打席の結果「左安」「遊ゴ」「見三振」など) と投手成績をチーム別に |
+| カレンダー | チームを選ぶと月間の日程と勝敗 (○×△・中止・開始時刻)、ホームゲームに下線、月の勝敗数。NPB 12 球団と MLB 30 球団 |
+| 順位 | セ・リーグ / パ・リーグ (対戦成績つき) / 交流戦 / オープン戦、MLB の地区別とワイルドカード |
+| 設定 | お気に入りチーム (一覧の先頭・カレンダーの初期チーム)、表示するリーグ、自動更新間隔 |
 
 MLB は日本時間の日付で表示します (例: 日本時間 10/11 の朝に行われる試合は 10/11 に出ます)。日本人選手は日本語表記で強調表示します。
 
@@ -72,15 +73,17 @@ https://<プロジェクト名>.pages.dev/api/npb/debug?url=https://baseball.yah
 ## ファイル構成
 
 ```
-public/            画面 (HTML / CSS / JS、PWA 設定、アイコン)
+public/            画面 (index.html, styles.css, js/ に画面ごとのモジュール、PWA 設定、アイコン)
 functions/api/     API の入口 (Cloudflare Pages Functions)
   npb/schedule.js    GET /api/npb/schedule?date=YYYY-MM-DD
   npb/game.js        GET /api/npb/game?id=...
-  npb/standings.js   GET /api/npb/standings
+  npb/standings.js   GET /api/npb/standings          (C / P / IL=交流戦 / OP=オープン戦)
+  npb/calendar.js    GET /api/npb/calendar?team=g&month=YYYY-MM
   npb/debug.js       GET /api/npb/debug?url=...
   mlb/schedule.js    GET /api/mlb/schedule?date=YYYY-MM-DD
   mlb/game.js        GET /api/mlb/game?id=<gamePk>
-  mlb/standings.js   GET /api/mlb/standings
+  mlb/standings.js   GET /api/mlb/standings          (AL / NL / WC)
+  mlb/calendar.js    GET /api/mlb/calendar?team=119&month=YYYY-MM
 lib/               取得・解析の本体 (html.js = 依存なしの HTML パーサー)
 test/              テストとダミーデータ
 dev/               ローカル確認用サーバー

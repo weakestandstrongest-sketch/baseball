@@ -5,7 +5,9 @@ import { parseHTML, lines, tables, text } from '../lib/html.js';
 import { parseYahooSchedule } from '../lib/npb/yahoo.js';
 import { parseNpbjpSchedule } from '../lib/npb/npbjp.js';
 import { buildGame } from '../lib/npb/build.js';
-import { parseStandings } from '../lib/npb/index.js';
+import { npbStandings, npbCalendar, parseStandingsPage } from '../lib/npb/index.js';
+import { standingsKey } from '../lib/npb/npbjp.js';
+import { installMockFetch } from './mock-fetch.js';
 import { parsePlays, parseDecisions, parseHomeRuns, parseStatus } from '../lib/npb/common.js';
 import { teamsInText, teamFromText } from '../lib/npb/teams.js';
 
@@ -84,9 +86,11 @@ test('試合詳細 (終了): スコアボード・責任投手・本塁打・戦
   assert.ok(g.plays[1].atBats[1].events[0].scoring);
   assert.equal(g.plays[3].events[0].change, true); // ピッチャー交代
   assert.equal(g.box.away.batting[0].rows[0][1], '度会 隆輝');
+  assert.equal(g.box.away.batting[0].rows.length, 12); // 途中出場を含む全員
+  assert.equal(g.box.away.batting[0].rows[0][10], '左本'); // イニング別の打席結果
   assert.equal(g.box.home.batting[0].rows[0][1], '吉川 尚輝');
   assert.equal(g.box.away.pitching[0].rows[0][1], '東 克樹');
-  assert.equal(g.box.home.pitching[0].rows[1][0], '敗');
+  assert.equal(g.box.home.pitching[0].rows[2][0], '敗');
 });
 
 test('試合詳細 (試合中): カウント・走者・打者/投手・投球', () => {
@@ -125,9 +129,43 @@ test('経過: 数字だけの行・交代・得点', () => {
   assert.equal(p[0].atBats[0].events[1].change, true);
 });
 
-test('順位表: セ・パを判定', () => {
-  const s = parseStandings([fx('yahoo/standings.html')]);
-  assert.equal(s.C.rows.length, 6);
-  assert.equal(s.C.rows[0].team.code, 't');
-  assert.equal(s.P.rows[0].team.code, 'h');
+test('順位表ページ: 順位表と対戦成績を判定', () => {
+  const t = parseStandingsPage(fx('yahoo/standings-c.html'));
+  assert.deepEqual(t.map((x) => [x.kind, x.rows.length, x.leagues.join()]), [['standings', 6, 'C'], ['matrix', 6, 'C']]);
+  assert.equal(t[0].rows[0].team.code, 't');
+  assert.equal(t[0].teamCol, 1);
+  assert.equal(t[1].headers[1], '神');
+});
+
+test('順位表: セ・パ・交流戦・オープン戦をタブのリンクからたどる', async () => {
+  installMockFetch();
+  const s = await npbStandings('2026');
+  assert.deepEqual(s.C.tables.map((x) => x.kind), ['standings', 'matrix']);
+  assert.equal(s.C.tables[0].headers.length, 14); // 詳しい方の表
+  assert.equal(s.P.tables[0].rows[0].team.code, 'h');
+  assert.equal(s.IL.tables.length, 1);
+  assert.equal(s.IL.tables[0].rows.length, 12);
+  assert.equal(s.OP.tables[0].rows[0].team.code, 'd');
+});
+
+test('カレンダー: npb.jp の月間日程からチームの勝敗', async () => {
+  installMockFetch();
+  const c = await npbCalendar('g', '2026-10');
+  assert.equal(c.source, 'npb.jp');
+  assert.deepEqual(c.games.map((g) => [g.date, `${g.home.short}-${g.away.short}`, g.side, g.result]), [
+    ['2026-10-01', '神-巨', 'away', 'draw'],
+    ['2026-10-02', 'ヤ-巨', 'away', 'loss'],
+    ['2026-10-03', '巨-デ', 'home', 'loss'],
+    ['2026-10-10', '巨-デ', 'home', 'loss'],
+    ['2026-10-11', '巨-デ', 'home', null],
+    ['2026-10-12', '巨-デ', 'home', null],
+  ]);
+  assert.equal(c.games[4].startTime, '14:00');
+  assert.equal(c.games[2].leagueGroup, 'CS');
+});
+
+test('リーグ名の判定は直前の見出しを優先', () => {
+  assert.equal(standingsKey('トップ セ・リーグ パ・リーグ 交流戦 オープン戦 2026年 オープン戦 順位表'), 'OP');
+  assert.equal(standingsKey('交流戦 順位表'), 'IL');
+  assert.equal(standingsKey('なし'), null);
 });

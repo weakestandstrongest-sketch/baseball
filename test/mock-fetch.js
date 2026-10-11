@@ -17,15 +17,22 @@ const ROUTES = [
   [/statsapi\.mlb\.com\/api\/v1\/schedule/, () => mlb.schedule],
   [/statsapi\.mlb\.com\/api\/v1\.1\/game\/813001\/feed\/live/, () => mlb.feed],
   [/statsapi\.mlb\.com\/api\/v1\.1\/game\/(\d+)\/feed\/live/, (m) => finalFeed(Number(m[1]))],
+  [/statsapi\.mlb\.com\/api\/v1\/standings.*wildCard/, () => mlb.wildcard],
   [/statsapi\.mlb\.com\/api\/v1\/standings/, () => mlb.standings],
   [/baseball\.yahoo\.co\.jp\/npb\/schedule/, () => fx('yahoo/schedule.html')],
+  [/baseball\.yahoo\.co\.jp\/npb\/standings\/1\//, () => fx('yahoo/standings-c.html')],
+  [/baseball\.yahoo\.co\.jp\/npb\/standings\/2\//, () => fx('yahoo/standings-p.html')],
+  [/baseball\.yahoo\.co\.jp\/npb\/standings\/interleague/, () => fx('yahoo/standings-il.html')],
+  [/baseball\.yahoo\.co\.jp\/npb\/standings\/open/, () => fx('yahoo/standings-op.html')],
   [/baseball\.yahoo\.co\.jp\/npb\/game\/2021029839\/top/, () => fx('yahoo/top-final.html')],
   [/baseball\.yahoo\.co\.jp\/npb\/game\/\d+\/top/, () => fx('yahoo/top-live.html')],
   [/baseball\.yahoo\.co\.jp\/npb\/game\/\d+\/stats/, () => fx('yahoo/stats.html')],
   [/baseball\.yahoo\.co\.jp\/npb\/game\/\d+\/text/, () => fx('yahoo/text.html')],
   [/baseball\.yahoo\.co\.jp\/npb\/game\/\d+\/score/, () => fx('yahoo/score-live.html')],
   [/baseball\.yahoo\.co\.jp\/npb\/standings/, () => fx('yahoo/standings.html')],
+  [/npb\.jp\/games\/\d+\/schedule_10_detail/, () => fx('npbjp/schedule-10.html')],
   [/npb\.jp\/games\/\d+\/schedule_\d+_detail/, () => fx('npbjp/schedule.html')],
+  [/npb\.jp\/cs\/\d+\/schedule_detail/, () => fx('npbjp/cs.html')],
 ];
 
 export function installMockFetch() {

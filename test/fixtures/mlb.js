@@ -97,7 +97,7 @@ const allPlays = [
   play(1, 'top', OHTANI, WHEELER,
     { event: 'Home Run', eventType: 'home_run', description: 'Shohei Ohtani homers (3) on a fly ball to right field.', rbi: 1, awayScore: 1, homeScore: 0 },
     [pitch(1, 'FF', 'B', true, false, 97.2, 0.9, 3.1, 1, 0), pitch(2, 'SL', 'C', false, true, 88.1, 0.2, 2.4, 1, 1),
-      pitch(3, 'FF', 'X', false, false, 96.8, -0.1, 2.9, 1, 1, { hitData: { launchSpeed: 112.3, launchAngle: 27, totalDistance: 431 } })],
+      pitch(3, 'FF', 'X', false, false, 96.8, -0.1, 2.9, 1, 1, { hitData: { launchSpeed: 112.3, launchAngle: 27, totalDistance: 431, location: '9' } })],
     { balls: 1, strikes: 1, outs: 0 }),
   play(1, 'top', BETTS, WHEELER,
     { event: 'Strikeout', eventType: 'strikeout', description: 'Mookie Betts called out on strikes.', isOut: true },
@@ -109,7 +109,7 @@ const allPlays = [
     { balls: 4, strikes: 0, outs: 0 }, { matchup: { postOnFirst: SCHWARBER } }),
   play(1, 'bottom', HARPER, YAMAMOTO,
     { event: 'Grounded Into DP', eventType: 'grounded_into_double_play', description: 'Bryce Harper grounds into a double play.', isOut: true },
-    [pitch(1, 'FS', 'X', false, false, 90.5, 0.1, 1.8, 0, 0)],
+    [pitch(1, 'FS', 'X', false, false, 90.5, 0.1, 1.8, 0, 0, { hitData: { launchSpeed: 88.0, launchAngle: -5, location: '4' } })],
     { balls: 0, strikes: 0, outs: 2 }),
   {
     // 進行中の打席
@@ -164,30 +164,57 @@ export const feed = {
     plays: { allPlays, currentPlay: allPlays[allPlays.length - 1] },
     boxscore: {
       teams: {
-        away: {
-          players: {
-            ID660271: bxPlayer(OHTANI, 'DH', '100', { atBats: 3, runs: 1, hits: 1, rbi: 1, homeRuns: 1, baseOnBalls: 0, strikeOuts: 1, stolenBases: 0 }, { avg: '.282', homeRuns: 55, ops: '1.014' }),
-            ID605141: bxPlayer(BETTS, 'SS', '200', { atBats: 3, runs: 0, hits: 0, rbi: 0 }, { avg: '.258' }),
-            ID518692: bxPlayer(FREEMAN, '1B', '300', { atBats: 2, runs: 1, hits: 1 }, { avg: '.295' }),
-            ID808967: bxPlayer(YAMAMOTO, 'P', undefined, {}, {}, { inningsPitched: '5.1', battersFaced: 21, numberOfPitches: 82, hits: 4, homeRuns: 0, baseOnBalls: 2, strikeOuts: 7, runs: 2, earnedRuns: 2 }, { era: '2.49', wins: 12, losses: 8, saves: 0 }),
-          },
-          batters: [660271, 605141, 518692],
-          pitchers: [808967],
-          teamStats: { batting: { atBats: 8, runs: 2, hits: 2, rbi: 1, homeRuns: 1, baseOnBalls: 0, strikeOuts: 1, stolenBases: 0 } },
-        },
-        home: {
-          players: {
-            ID656941: bxPlayer(SCHWARBER, 'DH', '100', { atBats: 2, runs: 0, hits: 0, baseOnBalls: 1, stolenBases: 1 }, { avg: '.240', homeRuns: 56, ops: '.920' }),
-            ID547180: bxPlayer(HARPER, '1B', '200', { atBats: 2, hits: 1 }, { avg: '.275', homeRuns: 27, ops: '.850' }),
-            ID554430: bxPlayer(WHEELER, 'P', undefined, {}, {}, { inningsPitched: '5.0', battersFaced: 20, numberOfPitches: 88, hits: 6, homeRuns: 1, baseOnBalls: 1, strikeOuts: 8, runs: 3, earnedRuns: 3, note: '' }, { era: '2.71' }),
-          },
-          batters: [656941, 547180],
-          pitchers: [554430],
-        },
+        away: lineup([
+          [OHTANI, 'DH', { atBats: 3, runs: 1, hits: 1, rbi: 1, homeRuns: 1, strikeOuts: 1 }, { avg: '.282', homeRuns: 55, ops: '1.014' }],
+          [BETTS, 'SS', { atBats: 3, strikeOuts: 1 }, { avg: '.258' }],
+          [FREEMAN, '1B', { atBats: 2, runs: 1, hits: 1, baseOnBalls: 1 }, { avg: '.295' }],
+          [person(9, 'Teoscar Hernández'), 'RF', { atBats: 3, hits: 1, rbi: 1 }, { avg: '.262' }],
+          [person(4, 'Max Muncy'), '3B', { atBats: 2, runs: 1, hits: 1, rbi: 1, baseOnBalls: 1 }, { avg: '.244' }],
+          [person(2, 'Will Smith'), 'C', { atBats: 3, hits: 1 }, { avg: '.271' }],
+          [person(3, 'Tommy Edman'), '2B', { atBats: 3 }, { avg: '.236' }],
+          [person(7, 'Michael Conforto'), 'LF', { atBats: 2, hits: 1 }, { avg: '.215' }, [[person(10, 'Kiké Hernández'), 'PH', { atBats: 1 }, { avg: '.203' }]]],
+          [person(8, 'Andy Pages'), 'CF', { atBats: 2, strikeOuts: 1 }, { avg: '.250' }],
+        ], [
+          [YAMAMOTO, { inningsPitched: '5.1', battersFaced: 21, numberOfPitches: 82, hits: 4, homeRuns: 0, baseOnBalls: 2, strikeOuts: 7, runs: 2, earnedRuns: 2 }, { era: '2.49', wins: 12, losses: 8, saves: 0 }],
+          [person(20, 'Alex Vesia'), { inningsPitched: '0.2', battersFaced: 2, numberOfPitches: 9, strikeOuts: 1 }, { era: '3.02' }],
+        ], { atBats: 23, runs: 3, hits: 6, rbi: 3, homeRuns: 1, baseOnBalls: 2, strikeOuts: 3, stolenBases: 0 }),
+        home: lineup([
+          [SCHWARBER, 'DH', { atBats: 2, baseOnBalls: 1, stolenBases: 1 }, { avg: '.240', homeRuns: 56, ops: '.920' }],
+          [HARPER, '1B', { atBats: 2, hits: 1 }, { avg: '.275', homeRuns: 27, ops: '.850' }],
+          [person(11, 'Trea Turner'), 'SS', { atBats: 2, runs: 1, hits: 1 }, { avg: '.295' }],
+          [person(12, 'Alec Bohm'), '3B', { atBats: 2, rbi: 1 }, { avg: '.287' }],
+          [person(13, 'J.T. Realmuto'), 'C', { atBats: 2, hits: 1, runs: 1 }, { avg: '.257' }],
+          [person(14, 'Nick Castellanos'), 'RF', { atBats: 2, rbi: 1 }, { avg: '.250' }],
+          [person(15, 'Bryson Stott'), '2B', { atBats: 2, hits: 1 }, { avg: '.245' }],
+          [person(16, 'Max Kepler'), 'LF', { atBats: 2, strikeOuts: 1 }, { avg: '.230' }],
+          [person(17, 'Brandon Marsh'), 'CF', { atBats: 2, strikeOuts: 1 }, { avg: '.260' }],
+        ], [
+          [WHEELER, { inningsPitched: '5.0', battersFaced: 20, numberOfPitches: 88, hits: 6, homeRuns: 1, baseOnBalls: 1, strikeOuts: 8, runs: 3, earnedRuns: 3 }, { era: '2.71' }],
+          [person(21, 'Matt Strahm'), { inningsPitched: '1.0', battersFaced: 3, numberOfPitches: 14, strikeOuts: 2 }, { era: '2.88' }],
+        ], { atBats: 18, runs: 2, hits: 4, rbi: 2, baseOnBalls: 1, strikeOuts: 2, stolenBases: 1 }),
       },
     },
   },
 };
+
+function lineup(batters, pitchers, teamBatting) {
+  const players = {};
+  const ids = [];
+  batters.forEach(([p, pos, bat, season, subs = []], i) => {
+    players['ID' + p.id] = bxPlayer(p, pos, String((i + 1) * 100), bat, season);
+    ids.push(p.id);
+    subs.forEach(([sp, spos, sbat, sseason], k) => {
+      players['ID' + sp.id] = bxPlayer(sp, spos, String((i + 1) * 100 + k + 1), sbat, sseason);
+      ids.push(sp.id);
+    });
+  });
+  const pids = [];
+  for (const [p, pit, season] of pitchers) {
+    players['ID' + p.id] = bxPlayer(p, 'P', undefined, {}, {}, pit, season);
+    pids.push(p.id);
+  }
+  return { players, batters: ids, pitchers: pids, teamStats: { batting: teamBatting } };
+}
 
 export const standings = {
   records: [
@@ -201,6 +228,18 @@ export const standings = {
       division: { id: 203 },
       teamRecords: [
         { team: DODGERS, wins: 98, losses: 64, winningPercentage: '.605', gamesBack: '-', wildCardGamesBack: '-', streak: { streakCode: 'L1' }, runDifferential: 150, records: { splitRecords: [{ type: 'lastTen', wins: 7, losses: 3 }] } },
+      ],
+    },
+  ],
+};
+
+export const wildcard = {
+  records: [
+    {
+      league: { id: 104 },
+      teamRecords: [
+        { team: { id: 112, name: 'Chicago Cubs', abbreviation: 'CHC' }, wins: 92, losses: 70, winningPercentage: '.568', wildCardGamesBack: '+3.0', wildCardRank: '1', streak: { streakCode: 'W3' }, runDifferential: 80, records: { splitRecords: [{ type: 'lastTen', wins: 7, losses: 3 }] } },
+        { team: { id: 135, name: 'San Diego Padres', abbreviation: 'SD' }, wins: 90, losses: 72, winningPercentage: '.556', wildCardGamesBack: '+1.0', wildCardRank: '2', streak: { streakCode: 'L2' }, runDifferential: 60, records: { splitRecords: [{ type: 'lastTen', wins: 5, losses: 5 }] } },
       ],
     },
   ],

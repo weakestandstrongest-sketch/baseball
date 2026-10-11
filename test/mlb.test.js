@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { installMockFetch } from './mock-fetch.js';
-import { mlbSchedule, mlbGame, mlbStandings, convertFeed } from '../lib/mlb.js';
+import { mlbSchedule, mlbGame, mlbStandings, mlbCalendar, convertFeed, shortResult } from '../lib/mlb.js';
 import * as fx from './fixtures/mlb.js';
 
 installMockFetch();
@@ -54,6 +54,11 @@ test('試合詳細 (試合中)', () => {
   const bat = g.box.away.batting[0];
   assert.deepEqual(bat.rows[0].slice(0, 4), ['(指)', '大谷 翔平', '.282', '3']);
   assert.equal(bat.rows[bat.rows.length - 1][1], '合計');
+  assert.equal(bat.rows.length, 11); // 9人 + 代打 + 合計
+  assert.equal(bat.headers[11], '1回');
+  assert.equal(bat.rows[0][11], '右本');
+  assert.equal(bat.rows[1][11], '見三振');
+  assert.equal(g.box.home.batting[0].rows[1][11], '二併殺');
   assert.equal(g.box.away.pitching[0].rows[0][1], '山本 由伸');
 });
 
@@ -64,9 +69,32 @@ test('試合詳細 (終了): 責任投手', async () => {
   assert.deepEqual(g.decisions.win, { name: '山本 由伸', record: '12勝8敗0S' });
 });
 
-test('順位表: 地区順に並ぶ', async () => {
+test('順位表: 地区とワイルドカード', async () => {
   const s = await mlbStandings(2026);
-  assert.deepEqual(s.map((d) => d.name), ['ナ・リーグ東地区', 'ナ・リーグ西地区']);
-  assert.equal(s[0].rows[0].cells[0], 'フィリーズ');
-  assert.equal(s[0].rows[0].cells[8], '+112');
+  assert.deepEqual(s.NL.map((d) => d.name), ['ナ・リーグ東地区', 'ナ・リーグ西地区']);
+  assert.equal(s.NL[0].rows[0].cells[1], 'フィリーズ');
+  assert.equal(s.NL[0].rows[0].cells[9], '+112');
+  assert.equal(s.NL[0].rows[0].cells[8], '2連勝');
+  assert.equal(s.WC[0].name, 'ナ・リーグ ワイルドカード');
+  assert.equal(s.WC[0].rows[1].cells[1], 'パドレス');
+});
+
+test('カレンダー: 日本時間の月で絞り、勝敗を付ける', async () => {
+  const c = await mlbCalendar(119, '2026-10');
+  assert.equal(c.team.short, 'LAD');
+  const live = c.games.find((g) => g.id === '813001');
+  assert.equal(live.side, 'away');
+  assert.equal(live.result, null);
+  assert.ok(c.games.every((g) => g.date.startsWith('2026-10')));
+});
+
+test('打席結果の短い表記', () => {
+  const p = (eventType, event, extra = {}) => ({ result: { eventType, event }, matchup: { batter: { id: 1 } }, playEvents: [], ...extra });
+  assert.equal(shortResult(p('single', 'Single'), { location: '7' }), '左安');
+  assert.equal(shortResult(p('field_out', 'Groundout'), { location: '6' }), '遊ゴ');
+  assert.equal(shortResult(p('field_out', 'Flyout'), { location: '8' }), '中飛');
+  assert.equal(shortResult(p('home_run', 'Home Run'), { location: '9' }), '右本');
+  assert.equal(shortResult(p('walk', 'Walk')), '四球');
+  assert.equal(shortResult(p('strikeout', 'Strikeout', { playEvents: [{ isPitch: true, details: { call: { code: 'S' } } }] })), '空三振');
+  assert.equal(shortResult(p('grounded_into_double_play', 'GIDP', { runners: [{ details: { runner: { id: 1 } }, credits: [{ position: { code: '4' } }] }] })), '二併殺');
 });
