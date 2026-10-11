@@ -121,7 +121,7 @@ export function gameCard(g) {
     const lose = done && t.score < other.score;
     return `<div class="gc-team ${win ? 'win' : ''} ${lose ? 'lose' : ''}">
       ${badge(t)}
-      <span class="nm">${esc(t.name)}${isFav(g.league, t) ? `<i class="fav">${icon('star', 12)}</i>` : ''}</span>
+      <span class="nm">${esc(t.name)}${isFav(g.league, t) ? `<i class="fav-ic">${icon('star', 12)}</i>` : ''}</span>
       ${t.record ? `<span class="rec">${esc(t.record)}</span>` : ''}
       ${showScore ? `<b class="sc">${t.score ?? ''}</b>` : ''}
       ${win ? '<i class="win-mark"></i>' : ''}

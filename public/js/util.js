@@ -77,6 +77,8 @@ const ICONS = {
   chevron: '<path d="M6 9l6 6 6-6"/>',
   stadium: '<path d="M3 10c3-2 6-3 9-3s6 1 9 3v7c-3 1.5-6 2.2-9 2.2S6 18.5 3 17z"/><path d="M3 10c3 1.6 6 2.4 9 2.4s6-.8 9-2.4"/>',
   clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+  chart: '<path d="M4 20h16"/><rect x="5.5" y="11" width="3.2" height="6.5" rx="1"/><rect x="10.4" y="6" width="3.2" height="11.5" rx="1"/><rect x="15.3" y="9" width="3.2" height="8.5" rx="1"/>',
+  sort: '<path d="M8 4v16M8 20l-3-3M8 20l3-3M16 20V4M16 4l-3 3M16 4l3 3"/>',
 };
 export function icon(name, size = 22) {
   return `<svg class="ic" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ''}</svg>`;

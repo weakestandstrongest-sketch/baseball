@@ -131,7 +131,7 @@ test('経過: 数字だけの行・交代・得点', () => {
 
 test('順位表ページ: 順位表と対戦成績を判定', () => {
   const t = parseStandingsPage(fx('yahoo/standings-c.html'));
-  assert.deepEqual(t.map((x) => [x.kind, x.rows.length, x.leagues.join()]), [['standings', 6, 'C'], ['matrix', 6, 'C']]);
+  assert.deepEqual(t.map((x) => [x.kind, x.rows.length, x.leagues.join()]), [['standings', 6, 'C'], ['matrix', 6, 'C'], ['detail', 6, 'C']]);
   assert.equal(t[0].rows[0].team.code, 't');
   assert.equal(t[0].teamCol, 1);
   assert.equal(t[1].headers[1], '神');
@@ -140,8 +140,8 @@ test('順位表ページ: 順位表と対戦成績を判定', () => {
 test('順位表: セ・パ・交流戦・オープン戦をタブのリンクからたどる', async () => {
   installMockFetch();
   const s = await npbStandings('2026');
-  assert.deepEqual(s.C.tables.map((x) => x.kind), ['standings', 'matrix']);
-  assert.equal(s.C.tables[0].headers.length, 14); // 詳しい方の表
+  assert.deepEqual(s.C.tables.map((x) => x.kind), ['standings', 'matrix', 'detail']);
+  assert.equal(s.C.tables[0].headers.length, 15); // 詳しい方の表
   assert.equal(s.P.tables[0].rows[0].team.code, 'h');
   assert.equal(s.IL.tables.length, 1);
   assert.equal(s.IL.tables[0].rows.length, 12);

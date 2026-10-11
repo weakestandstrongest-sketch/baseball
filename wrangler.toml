@@ -1,0 +1,4 @@
+# Cloudflare Pages の設定 (GitHub と接続すると自動で読み込まれます)
+name = "baseball-sokuho"
+pages_build_output_dir = "public"
+compatibility_date = "2024-09-23"

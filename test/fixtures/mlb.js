@@ -244,3 +244,32 @@ export const wildcard = {
     },
   ],
 };
+
+const LEADER_DATA = {
+  battingAverage: [['Shohei Ohtani', 119, '.310'], ['Freddie Freeman', 119, '.305'], ['Trea Turner', 143, '.301']],
+  homeRuns: [['Kyle Schwarber', 143, '56'], ['Shohei Ohtani', 119, '55'], ['Pete Alonso', 121, '38']],
+  runsBattedIn: [['Kyle Schwarber', 143, '132'], ['Shohei Ohtani', 119, '120']],
+  earnedRunAverage: [['Yoshinobu Yamamoto', 119, '2.49'], ['Zack Wheeler', 143, '2.71']],
+  saves: [['Tanner Scott', 119, '38'], ['Jhoan Duran', 143, '33']],
+  strikeouts: [['Zack Wheeler', 143, '220'], ['Yoshinobu Yamamoto', 119, '201']],
+};
+const TEAMS = { 119: DODGERS, 143: PHILLIES, 121: { id: 121, name: 'New York Mets', abbreviation: 'NYM' } };
+
+export function leaders(url) {
+  const cats = (/leaderCategories=([^&]+)/.exec(url) || [])[1].split(',');
+  return {
+    leagueLeaders: cats.filter((c) => LEADER_DATA[c]).map((c) => ({
+      leaderCategory: c,
+      leaders: LEADER_DATA[c].map(([n, t, v], i) => ({ rank: i + 1, value: v, team: TEAMS[t], person: { id: i, fullName: n } })),
+    })),
+  };
+}
+
+export const statsList = {
+  stats: [{
+    splits: [
+      { rank: 1, player: { fullName: 'Kyle Schwarber' }, team: PHILLIES, stat: { gamesPlayed: 162, avg: '.240', atBats: 600, hits: 144, homeRuns: 56, rbi: 132, ops: '.920' } },
+      { rank: 2, player: { fullName: 'Shohei Ohtani' }, team: DODGERS, stat: { gamesPlayed: 158, avg: '.310', atBats: 610, hits: 189, homeRuns: 55, rbi: 120, ops: '1.014' } },
+    ],
+  }],
+};

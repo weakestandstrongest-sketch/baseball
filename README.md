@@ -13,7 +13,8 @@ Safari で開いて「ホーム画面に追加」すると、普通のアプリ�
 | 経過 | イニングごとの打席結果。タップで一球ごとの内容を展開。新しい順 / 古い順 |
 | 成績 | 打者成績 (途中出場を含む全員・各打席の結果「左安」「遊ゴ」「見三振」など) と投手成績をチーム別に |
 | カレンダー | チームを選ぶと月間の日程と勝敗 (○×△・中止・開始時刻)、ホームゲームに下線、月の勝敗数。NPB 12 球団と MLB 30 球団 |
-| 順位 | セ・リーグ / パ・リーグ (対戦成績つき) / 交流戦 / オープン戦、MLB の地区別とワイルドカード |
+| 個人成績 | セ / パ / 交流戦 / オープン戦 と MLB (ア・ナ) の打者・投手リーダー。各項目から詳しい成績一覧へ (見出しタップで並べ替え) |
+| 順位 | セ・リーグ / パ・リーグ (詳しい順位表・対戦成績・その他の表) / 交流戦 / オープン戦、MLB の地区別とワイルドカード (基本 / 詳細) |
 | 設定 | お気に入りチーム (一覧の先頭・カレンダーの初期チーム)、表示するリーグ、自動更新間隔 |
 
 MLB は日本時間の日付で表示します (例: 日本時間 10/11 の朝に行われる試合は 10/11 に出ます)。日本人選手は日本語表記で強調表示します。
@@ -34,11 +35,16 @@ iPhone (PWA: public/) ──> /api/* (Cloudflare Pages Functions: functions/ + l
 ブラウザから他サイトのページを直接読むことはできない (CORS) ため、無料の Cloudflare Pages Functions を中継役にしています。
 中継側で HTML を解析し、NPB も MLB も同じ形の JSON に変換して返します。
 
+## 料金について
+
+**App Store のアプリではなく、Safari で URL を開いて使うウェブアプリです。** アプリの審査・Apple の開発者登録 (年 99 ドル)・Mac はどれも不要です。
+置き場所の Cloudflare Pages も無料プランで十分です (1 日 10 万リクエストまで無料。1 人で使う分には届きません)。クレジットカードの登録も不要です。
+
 ## 公開手順 (無料・10 分ほど)
 
 1. [Cloudflare](https://dash.cloudflare.com/sign-up) のアカウントを作る (無料プラン)
 2. ダッシュボードで **Workers & Pages → Create → Pages → Connect to Git** を選び、この GitHub リポジトリを接続
-3. ビルド設定:
+3. ビルド設定 (リポジトリの `wrangler.toml` から自動で入ります。入らない場合だけ手で設定):
    - Framework preset: `None`
    - Build command: (空欄)
    - Build output directory: `public`
@@ -82,7 +88,9 @@ functions/api/     API の入口 (Cloudflare Pages Functions)
   npb/debug.js       GET /api/npb/debug?url=...
   mlb/schedule.js    GET /api/mlb/schedule?date=YYYY-MM-DD
   mlb/game.js        GET /api/mlb/game?id=<gamePk>
+  npb/stats.js       GET /api/npb/stats              (個人成績リーダー / ?list=<一覧ページ URL>)
   mlb/standings.js   GET /api/mlb/standings          (AL / NL / WC)
+  mlb/stats.js       GET /api/mlb/stats?lg=AL        (リーダー / &group=hitting&sort=homeRuns で一覧)
   mlb/calendar.js    GET /api/mlb/calendar?team=119&month=YYYY-MM
 lib/               取得・解析の本体 (html.js = 依存なしの HTML パーサー)
 test/              テストとダミーデータ

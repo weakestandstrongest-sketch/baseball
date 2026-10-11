@@ -6,11 +6,13 @@ import { gameView } from './game.js';
 import { calendarView } from './calendar.js';
 import { standingsView } from './standings.js';
 import { settingsView } from './settings.js';
+import { statsView, statsListView } from './stats.js';
 
 const TABS = [
   ['games', '#/', '試合', 'ball'],
   ['calendar', '#/calendar', 'カレンダー', 'calendar'],
   ['standings', '#/standings', '順位', 'trophy'],
+  ['stats', '#/stats', '成績', 'chart'],
   ['settings', '#/settings', '設定', 'gear'],
 ];
 
@@ -33,6 +35,7 @@ function route() {
   if (parts[0] === 'game') return gameView(parts[1], decodeURIComponent(parts[2] || ''), parts[3] || 'top');
   if (parts[0] === 'calendar') return calendarView(q);
   if (parts[0] === 'standings') return standingsView(q);
+  if (parts[0] === 'stats') return parts[1] === 'list' ? statsListView(q) : statsView(q);
   if (parts[0] === 'settings') return settingsView();
   return gamesView(q);
 }

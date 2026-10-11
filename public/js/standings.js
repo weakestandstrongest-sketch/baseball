@@ -8,6 +8,7 @@ const cache = { npb: null, mlb: null };
 
 export function standingsView(q) {
   const tab = q.get('lg') || 'C';
+  const detail = q.get('v') === 'detail';
   const isMLB = ['MLB', 'AL', 'NL', 'WC'].includes(tab);
   const sub = tab === 'MLB' ? 'AL' : tab;
   const self = { name: 'standings', refresh: () => load() };
@@ -19,7 +20,8 @@ export function standingsView(q) {
     let body = '';
     if (isMLB) {
       const d = cache.mlb;
-      if (d) body = (d[sub] || []).map((t) => `<h3 class="sec-title">${esc(t.name)}</h3>${standTable(t, 'MLB')}`).join('') || emptyState('データがありません');
+      const view = (t) => (detail && t.detailHeaders ? { ...t, headers: t.detailHeaders, rows: t.rows.map((r) => ({ ...r, cells: r.detail })) } : t);
+      if (d) body = (d[sub] || []).map((t) => `<h3 class="sec-title">${esc(t.name)}</h3>${standTable(view(t), 'MLB')}`).join('') || emptyState('データがありません');
     } else if (cache.npb) {
       const t = cache.npb[tab];
       body = t && t.tables.length
@@ -34,7 +36,10 @@ export function standingsView(q) {
           ${NPB_TABS.map(([k, l]) => `<a class="${k === tab ? 'on' : ''}" href="#/standings?lg=${k}">${l}</a>`).join('')}
           <a class="${isMLB ? 'on' : ''}" href="#/standings?lg=AL">MLB</a>
         </div>
-        ${isMLB ? `<div class="seg seg-sm sub-seg">${MLB_TABS.map(([k, l]) => `<a class="${k === sub ? 'on' : ''}" href="#/standings?lg=${k}">${l}</a>`).join('')}</div>` : ''}
+        ${isMLB ? `<div class="sub-row">
+          <div class="seg seg-sm grow">${MLB_TABS.map(([k, l]) => `<a class="${k === sub ? 'on' : ''}" href="#/standings?lg=${k}${detail ? '&v=detail' : ''}">${l}</a>`).join('')}</div>
+          <div class="seg seg-sm"><a class="${detail ? '' : 'on'}" href="#/standings?lg=${sub}">基本</a><a class="${detail ? 'on' : ''}" href="#/standings?lg=${sub}&v=detail">詳細</a></div>
+        </div>` : ''}
       </div>
       <main class="list">${error ? errorBox(error) : ''}${body}</main>`;
   };
@@ -68,6 +73,16 @@ function matrixTable(t) {
     <thead><tr>${t.headers.map((h, i) => `<th class="${i === 0 ? 'nm' : ''}">${esc(h)}</th>`).join('')}</tr></thead>
     <tbody>${t.rows.map((r) => `<tr>${r.cells.map((c, i) => i === 0
       ? `<td class="nm"><span class="tn">${badge(r.team, 'xs')}${esc(c)}</span></td>`
-      : `<td class="${c === '-' || c === '' ? 'self' : ''}">${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody>
+      : matrixCell(c)).join('')}</tr>`).join('')}</tbody>
   </table></div></div>`;
+}
+
+// 「16 - 8 (1)」→ 勝-敗 と (引分) に分け、勝ち越しは色付け
+function matrixCell(c) {
+  const m = /^(\d+)\s*-\s*(\d+)(?:\s*-\s*(\d+))?\s*(?:\((\d+)\))?$/.exec(c || '');
+  if (!m) return `<td class="${c === '-' || c === '' ? 'self' : ''}">${esc(c)}</td>`;
+  const w = Number(m[1]);
+  const l = Number(m[2]);
+  const d = m[4] ?? m[3];
+  return `<td class="mx ${w > l ? 'up' : w < l ? 'down' : ''}"><b>${w}-${l}</b>${d !== undefined ? `<small>(${d})</small>` : ''}</td>`;
 }

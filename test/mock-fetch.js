@@ -20,8 +20,14 @@ const ROUTES = [
   [/statsapi\.mlb\.com\/api\/v1\/standings.*wildCard/, () => mlb.wildcard],
   [/statsapi\.mlb\.com\/api\/v1\/standings/, () => mlb.standings],
   [/baseball\.yahoo\.co\.jp\/npb\/schedule/, () => fx('yahoo/schedule.html')],
-  [/baseball\.yahoo\.co\.jp\/npb\/standings\/1\//, () => fx('yahoo/standings-c.html')],
-  [/baseball\.yahoo\.co\.jp\/npb\/standings\/2\//, () => fx('yahoo/standings-p.html')],
+  [/baseball\.yahoo\.co\.jp\/npb\/stats\/(batter|pitcher)/, () => fx('yahoo/stats-list.html')],
+  [/baseball\.yahoo\.co\.jp\/npb\/stats\/detail\/2/, () => fx('yahoo/stats-p.html')],
+  [/baseball\.yahoo\.co\.jp\/npb\/stats\/detail\/1/, () => fx('yahoo/stats-top.html')],
+  [/baseball\.yahoo\.co\.jp\/npb\/stats\/$/, () => fx('yahoo/stats-top.html')],
+  [/statsapi\.mlb\.com\/api\/v1\/stats\/leaders/, (m, url) => mlb.leaders(url)],
+  [/statsapi\.mlb\.com\/api\/v1\/stats\?/, () => mlb.statsList],
+  [/baseball\.yahoo\.co\.jp\/npb\/standings\/detail\/1/, () => fx('yahoo/standings-c.html')],
+  [/baseball\.yahoo\.co\.jp\/npb\/standings\/detail\/2/, () => fx('yahoo/standings-p.html')],
   [/baseball\.yahoo\.co\.jp\/npb\/standings\/interleague/, () => fx('yahoo/standings-il.html')],
   [/baseball\.yahoo\.co\.jp\/npb\/standings\/open/, () => fx('yahoo/standings-op.html')],
   [/baseball\.yahoo\.co\.jp\/npb\/game\/2021029839\/top/, () => fx('yahoo/top-final.html')],
@@ -41,7 +47,7 @@ export function installMockFetch() {
     for (const [re, fn] of ROUTES) {
       const m = re.exec(url);
       if (!m) continue;
-      const body = fn(m);
+      const body = fn(m, url);
       const isText = typeof body === 'string';
       return new Response(isText ? body : JSON.stringify(body), {
         status: 200,
