@@ -1,0 +1,9 @@
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+/sw.js
+  Cache-Control: no-cache
+/app.js
+  Cache-Control: no-cache
+/styles.css
+  Cache-Control: no-cache

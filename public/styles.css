@@ -1,0 +1,256 @@
+:root {
+  --bg: #000;
+  --bg2: #111113;
+  --cell: #1c1c1e;
+  --line: #2c2c2e;
+  --text: #fff;
+  --sub: #8e8e93;
+  --accent: #f5a623;
+  --live: #ff453a;
+  --green: #30d158;
+  --yellow: #ffd60a;
+  --blue: #0a84ff;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; background: var(--bg); color: var(--text); }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+  font-size: 15px;
+  line-height: 1.45;
+  padding-bottom: calc(60px + var(--safe-bottom));
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior-y: none;
+}
+body.in-game { padding-bottom: calc(24px + var(--safe-bottom)); }
+body.in-game .tabbar { display: none; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+small { color: var(--sub); font-size: 0.8em; }
+
+/* ---------- 下部タブバー ---------- */
+.tabbar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+  display: flex; background: rgba(18, 18, 20, 0.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--line); padding-bottom: var(--safe-bottom);
+}
+.tabbar a { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 6px 0 4px; font-size: 11px; color: var(--sub); }
+.tabbar a .ti { font-size: 20px; line-height: 1.2; filter: grayscale(1); opacity: 0.7; }
+.tabbar a.on { color: var(--accent); }
+.tabbar a.on .ti { filter: none; opacity: 1; }
+
+/* ---------- 一覧ヘッダー ---------- */
+header.top {
+  position: sticky; top: 0; z-index: 10; background: rgba(0, 0, 0, 0.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  padding: calc(var(--safe-top) + 8px) 12px 8px; border-bottom: 1px solid var(--line);
+}
+.ttl { font-size: 20px; margin: 4px 4px 8px; }
+.datebar { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.date { font-size: 18px; font-weight: 700; padding: 6px 12px; border-radius: 10px; }
+.date small { color: var(--accent); font-weight: 600; margin-left: 4px; }
+.hidden-date { position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px; left: 50%; top: 40px; }
+.circle {
+  width: 40px; height: 40px; border-radius: 50%; background: #2c2c2e; display: inline-flex; align-items: center; justify-content: center;
+  font-size: 26px; line-height: 1; color: #fff; flex: none;
+}
+.circle.spin { animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.chips { display: flex; gap: 8px; margin-top: 8px; overflow-x: auto; scrollbar-width: none; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { padding: 5px 14px; border-radius: 16px; background: var(--cell); color: #ddd; font-size: 14px; white-space: nowrap; }
+.chip.on { background: var(--accent); color: #000; font-weight: 700; }
+.chip.today { margin-left: auto; color: var(--accent); }
+
+/* ---------- 試合カード ---------- */
+.list { padding: 4px 12px 16px; }
+.sec-h { font-size: 13px; color: var(--sub); margin: 18px 4px 8px; font-weight: 600; letter-spacing: 0.04em; }
+.card { display: block; background: var(--cell); border-radius: 14px; padding: 12px 14px 10px; margin-bottom: 10px; border: 1px solid transparent; }
+.card.live { border-color: rgba(255, 69, 58, 0.45); }
+.card:active { background: #2a2a2d; }
+.card .series { font-size: 11px; color: var(--accent); margin-bottom: 4px; }
+.card .row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; }
+.team { display: flex; align-items: center; gap: 6px; min-width: 0; font-weight: 600; }
+.team.away { justify-content: flex-end; text-align: right; }
+.team .tn { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 15px; }
+.star { color: var(--accent); font-style: normal; font-size: 12px; }
+.badge { flex: none; min-width: 26px; height: 26px; padding: 0 4px; border-radius: 7px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; }
+.sc { display: flex; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; }
+.sc b { font-size: 26px; font-weight: 700; min-width: 22px; text-align: center; color: #bbb; }
+.sc b.w { color: #fff; }
+.sc .dash { color: var(--sub); }
+.sc .vs { color: var(--sub); font-size: 14px; }
+.card .meta { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 12px; color: var(--sub); }
+.st { font-weight: 600; }
+.st-live { color: var(--live); }
+.st-final { color: #ddd; }
+.st-postponed { color: var(--sub); }
+.st-pre { color: #ddd; }
+.outs { color: var(--live); letter-spacing: 1px; font-size: 10px; }
+.venue { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 55%; }
+.notes { margin-top: 6px; font-size: 12px; color: #aaa; border-top: 1px solid var(--line); padding-top: 6px; }
+.notes .sep { color: #444; margin: 0 6px; }
+.empty, .loading { text-align: center; color: var(--sub); padding: 40px 0; }
+.err { background: #3a1513; color: #ff9f97; padding: 10px 12px; border-radius: 10px; font-size: 13px; margin: 10px 0; word-break: break-all; }
+.err.small { font-size: 12px; padding: 6px 10px; }
+
+/* ---------- 試合画面ヘッダー ---------- */
+.gh {
+  position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 10px;
+  padding: calc(var(--safe-top) + 6px) 12px 8px; background: var(--bg);
+}
+.gt { flex: 1; text-align: center; min-width: 0; }
+.gt .t1 { font-size: 18px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gt .t2 { font-size: 12px; color: #ddd; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gtabs { display: flex; gap: 2px; padding: 4px 8px; border-top: 1px solid var(--line); }
+.gtabs a { flex: 1; text-align: center; padding: 9px 0; font-size: 16px; border-radius: 4px; }
+.gtabs a.on { background: #2c2c2e; }
+
+/* ---------- スコアボード ---------- */
+.lsw { padding: 6px 4px 10px; border-bottom: 1px solid var(--line); overflow-x: auto; }
+.ls { width: 100%; border-collapse: separate; border-spacing: 3px; font-variant-numeric: tabular-nums; }
+.ls th { color: #ddd; font-weight: 400; font-size: 14px; padding: 2px 0; }
+.ls td { background: var(--bg2); text-align: center; font-size: 18px; height: 34px; min-width: 22px; }
+.ls td.tot { background: #1a1a1c; color: #ddd; }
+.ls td.cur { background: #3a2e10; color: var(--accent); }
+.ls th.tm { font-size: 15px; font-weight: 600; text-align: center; border-left: 3px solid var(--tc); white-space: nowrap; padding: 0 4px; }
+.ls.extra td { font-size: 15px; min-width: 18px; }
+
+/* ---------- 試合画面の各タブ ---------- */
+.gbody { padding: 0 0 12px; }
+.status-line { text-align: center; padding: 10px; font-size: 16px; border-bottom: 1px solid var(--line); color: #ddd; }
+.status-line.st-live { color: var(--live); font-weight: 700; }
+.series-sm { display: block; font-size: 12px; color: var(--accent); }
+.bar { margin: 18px 0 0; padding: 8px 14px; font-size: 16px; font-weight: 700; border-left: 4px solid #555; border-bottom: 1px solid var(--line); color: #ddd; }
+.kv { border-bottom: 1px solid var(--line); }
+.kvr { display: flex; align-items: stretch; border-top: 1px solid var(--line); min-height: 46px; }
+.kvr:first-child { border-top: 0; }
+.kvr .k { flex: none; width: 46px; display: flex; align-items: center; justify-content: center; border-right: 3px solid var(--tc, #555); font-size: 16px; color: #ddd; }
+.kvr .k.c-win { --tc: var(--blue); }
+.kvr .k.c-loss { --tc: #ff9500; }
+.kvr .k.c-save { --tc: var(--blue); }
+.kvr .v { flex: 1; padding: 11px 14px; font-size: 16px; align-self: center; }
+.kvr .v small { margin-left: 2px; font-size: 14px; }
+.summary { padding: 12px 16px; margin: 0; font-size: 15px; line-height: 1.7; color: #ddd; }
+.scoring .sr { display: flex; gap: 10px; padding: 9px 14px; border-bottom: 1px solid var(--line); }
+.scoring .inn { flex: none; color: var(--accent); font-size: 13px; width: 44px; padding-top: 2px; }
+.scoring .sv small { display: block; margin-top: 2px; }
+em { font-style: normal; color: var(--accent); font-weight: 700; }
+.jp { color: #ffd479; }
+.foot { text-align: center; font-size: 11px; color: var(--sub); margin-top: 24px; }
+.foot a { text-decoration: underline; }
+
+/* 速報 */
+.abnav { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 8px 10px; border-bottom: 1px solid var(--line); font-size: 13px; }
+.abnav button { padding: 5px 10px; border-radius: 8px; background: var(--cell); }
+.abnav button:disabled { opacity: 0.3; }
+.bso { display: flex; justify-content: center; gap: 28px; padding: 10px; border-bottom: 1px solid var(--line); }
+.bso span { display: flex; align-items: center; gap: 6px; }
+.bso b { font-size: 17px; font-weight: 500; width: 14px; }
+.bso i { width: 14px; height: 14px; border-radius: 50%; background: #333; display: inline-block; }
+.bso i.g { background: var(--green); }
+.bso i.y { background: var(--yellow); }
+.bso i.r { background: var(--live); }
+.field { padding: 4px 8px; border-bottom: 1px solid var(--line); }
+.field svg { width: 100%; max-width: 420px; display: block; margin: 0 auto; }
+.field .grass { fill: #3f8c3a; stroke: #1f5e1d; stroke-width: 3; }
+.field .dirt { fill: #c8a77a; }
+.field .infield { fill: #5aa152; }
+.field .mound { fill: #c8a77a; }
+.field .base { fill: #fff; stroke: #999; stroke-width: 1; }
+.field .base.on { fill: var(--yellow); stroke: #8a6d00; stroke-width: 2; }
+.field .home { fill: #fff; }
+.field .rn { fill: #fff; font-size: 11px; font-weight: 700; paint-order: stroke; stroke: #000; stroke-width: 3px; }
+.field .df { fill: #fff; font-size: 9.5px; paint-order: stroke; stroke: rgba(0, 0, 0, 0.75); stroke-width: 3px; }
+.matchup { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--line); }
+.matchup .pp { padding: 10px 14px; min-height: 70px; }
+.matchup .pp + .pp { border-left: 1px solid var(--line); }
+.matchup .lbl { font-size: 13px; color: #ddd; }
+.matchup .nm { font-size: 17px; font-weight: 700; margin: 2px 0; }
+.matchup .inf, .matchup .sit { font-size: 12px; color: var(--sub); }
+.ondeck { padding: 6px 14px; margin: 0; font-size: 12px; color: var(--sub); border-bottom: 1px solid var(--line); }
+.lastplay { padding: 10px 14px; border-bottom: 1px solid var(--line); }
+.lastplay b { display: block; font-size: 16px; }
+.lastplay small { display: block; margin-top: 2px; }
+.lastplay .lbl { font-size: 12px; color: var(--sub); }
+.lastplay.scoring b { color: var(--accent); }
+.pitches { padding: 8px 10px; border-bottom: 1px solid var(--line); }
+.pitches.with-zone { display: grid; grid-template-columns: 112px 1fr; gap: 6px; align-items: start; }
+.zone { width: 100%; max-width: 170px; display: block; margin: 0 auto; }
+.zone .sz { fill: rgba(255, 255, 255, 0.04); stroke: #ddd; stroke-width: 1.5; }
+.zone .grid line { stroke: rgba(255, 255, 255, 0.25); stroke-width: 0.8; }
+.zone .plate { stroke: #ddd; stroke-width: 3; }
+.zone text { font-size: 9px; font-weight: 800; fill: #000; }
+.zone .k-ball circle { fill: var(--green); }
+.zone .k-strike circle { fill: var(--yellow); }
+.zone .k-inplay circle { fill: #64a8ff; }
+.zone .k-other circle { fill: #aaa; }
+.zone-wrap { padding: 6px 0; }
+.zone-wrap .zone { max-width: 130px; }
+.ptable { width: 100%; border-collapse: collapse; font-size: 13px; }
+.ptable td { white-space: nowrap; }
+.with-zone .ptable { font-size: 12px; }
+.ptable th { color: var(--sub); font-weight: 400; text-align: left; padding: 3px 4px; border-bottom: 1px solid var(--line); }
+.ptable td { padding: 5px 4px; border-bottom: 1px solid #1d1d1f; }
+.ptable td.num { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.pn { display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; border-radius: 50%; font-size: 11px; font-weight: 800; background: #555; color: #000; margin-right: 8px; flex: none; }
+.pn.k-ball { background: var(--green); }
+.pn.k-strike { background: var(--yellow); }
+.pn.k-inplay { background: #64a8ff; }
+.plist .pr { display: flex; align-items: center; padding: 6px 14px; border-bottom: 1px solid var(--line); font-size: 14px; }
+
+/* 経過 */
+.order { display: flex; justify-content: flex-end; gap: 4px; padding: 8px 10px 0; }
+.order button { font-size: 12px; padding: 4px 10px; border-radius: 12px; background: var(--cell); color: var(--sub); }
+.order button.on { color: #000; background: var(--accent); }
+.inn-h { margin: 14px 0 0; padding: 8px 14px; font-size: 17px; font-weight: 500; background: var(--bg2); border-left: 4px solid var(--tc); border-bottom: 1px solid var(--line); }
+.ab { border-bottom: 1px solid var(--line); }
+.abh { display: flex; align-items: center; gap: 8px; padding: 10px 14px 4px; cursor: pointer; }
+.abn { color: var(--sub); font-size: 13px; min-width: 26px; }
+.abb { font-weight: 600; font-size: 16px; }
+.abs { color: var(--sub); font-size: 13px; }
+.caret { margin-left: auto; color: var(--sub); transition: transform 0.15s; }
+.caret.open { transform: rotate(180deg); }
+.abr { padding: 0 14px 10px 48px; font-size: 15px; color: #ddd; }
+.ab.scoring .abr { color: var(--accent); font-weight: 600; }
+.abd { padding: 0 0 8px; background: #0b0b0c; }
+.ev { display: flex; align-items: center; padding: 6px 14px 6px 48px; font-size: 14px; color: #ccc; border-top: 1px solid #1a1a1c; }
+.ev.chg { color: #8ab4ff; font-size: 13px; }
+.ev.scoring { color: var(--accent); }
+.inn-h + .ev { padding-left: 14px; }
+.desc { padding: 6px 14px 4px 48px; font-size: 12px; color: var(--sub); }
+
+/* 成績 */
+.subtabs { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--line); }
+.subtabs button { padding: 12px 0; font-size: 16px; border-bottom: 2px solid transparent; }
+.subtabs button.on { color: var(--accent); border-color: var(--accent); }
+.team-h { margin: 12px 0 0; padding: 10px 14px; font-size: 18px; font-weight: 500; background: var(--bg2); border-left: 5px solid var(--tc); }
+.tscroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table.stat { border-collapse: collapse; width: 100%; font-size: 15px; font-variant-numeric: tabular-nums; }
+table.stat th { background: #18181a; color: #ccc; font-weight: 400; font-size: 13px; padding: 6px 6px; border: 1px solid var(--line); white-space: nowrap; }
+table.stat td { padding: 8px 6px; text-align: center; border: 1px solid var(--line); white-space: nowrap; }
+table.stat td.nm { text-align: left; position: sticky; left: 0; background: var(--bg); z-index: 1; min-width: 7.5em; }
+table.stat th.nm { position: sticky; left: 0; z-index: 2; }
+table.stat tr.total td { background: #141416; color: #ddd; }
+table.stat td.dec-勝 { color: #64a8ff; }
+table.stat td.dec-敗 { color: #ff9f0a; }
+table.stat td.dec-S, table.stat td.dec-H { color: var(--green); }
+.stand td.nm .dot, .fchip .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.stand tr.fav td { background: #2a2210; }
+.stand tr.fav td.nm { background: #2a2210; }
+.cl { color: var(--accent); }
+
+/* 設定 */
+.settings .hint { color: var(--sub); font-size: 13px; padding: 0 14px; }
+.fgrid { display: flex; flex-wrap: wrap; gap: 8px; padding: 6px 14px 10px; }
+.fgrid .fl { width: 100%; font-size: 12px; color: var(--sub); margin-top: 6px; }
+.fchip { padding: 6px 12px; border-radius: 16px; background: var(--cell); font-size: 14px; border: 1px solid transparent; }
+.fchip.on { border-color: var(--accent); background: #2a2210; }
+.toggles { display: flex; flex-wrap: wrap; gap: 16px; padding: 12px 14px; }
+.toggles label { display: flex; align-items: center; gap: 6px; }
+.toggles input { accent-color: var(--accent); width: 18px; height: 18px; }
+
+@media (min-width: 700px) {
+  #app { max-width: 680px; margin: 0 auto; }
+}
