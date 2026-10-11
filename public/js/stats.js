@@ -4,7 +4,7 @@ import { state } from './state.js';
 
 const LEAGUES = [['C', 'セ・リーグ'], ['P', 'パ・リーグ'], ['IL', '交流戦'], ['OP', 'オープン戦'], ['MLB', 'MLB']];
 const MLB_LG = [['AL', 'ア・リーグ'], ['NL', 'ナ・リーグ']];
-const cache = { npb: null, mlb: {} };
+const cache = { npb: {}, mlb: {} };
 
 export function statsView(q) {
   let lg = q.get('lg') || 'C';
@@ -18,8 +18,8 @@ export function statsView(q) {
 
   const render = () => {
     if (state.view !== self) return;
-    const data = isMLB ? cache.mlb[lg] : cache.npb && cache.npb[lg];
-    const loaded = isMLB ? !!cache.mlb[lg] : !!cache.npb;
+    const data = isMLB ? cache.mlb[lg] : cache.npb[lg];
+    const loaded = isMLB ? !!cache.mlb[lg] : lg in cache.npb;
     let body = '';
     if (data) {
       const boards = data[g] || [];
@@ -41,7 +41,7 @@ export function statsView(q) {
   async function load() {
     try {
       if (isMLB) cache.mlb[lg] = await api(`/mlb/stats?lg=${lg}`);
-      else cache.npb = await api('/npb/stats');
+      else cache.npb[lg] = (await api(`/npb/stats?lg=${lg}`))[lg] || null;
       error = null;
     } catch (e) { error = e.message; }
     render();

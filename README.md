@@ -29,30 +29,34 @@ NPB には公開 API がないため、ページの HTML を解析していま�
 ## しくみ
 
 ```
-iPhone (PWA: public/) ──> /api/* (Cloudflare Pages Functions: functions/ + lib/) ──> スポーツナビ / npb.jp / MLB API
+iPhone (PWA: public/) ──> /api/* (Cloudflare Workers: src/worker.js → functions/ + lib/) ──> スポーツナビ / npb.jp / MLB API
 ```
 
-ブラウザから他サイトのページを直接読むことはできない (CORS) ため、無料の Cloudflare Pages Functions を中継役にしています。
+ブラウザから他サイトのページを直接読むことはできない (CORS) ため、無料の Cloudflare Workers を中継役にしています。
 中継側で HTML を解析し、NPB も MLB も同じ形の JSON に変換して返します。
 
 ## 料金について
 
 **App Store のアプリではなく、Safari で URL を開いて使うウェブアプリです。** アプリの審査・Apple の開発者登録 (年 99 ドル)・Mac はどれも不要です。
-置き場所の Cloudflare Pages も無料プランで十分です (1 日 10 万リクエストまで無料。1 人で使う分には届きません)。クレジットカードの登録も不要です。
+置き場所の Cloudflare Workers も無料プランで十分です (1 日 10 万リクエストまで無料。1 人で使う分には届きません)。クレジットカードの登録も不要です。
 
 ## 公開手順 (無料・10 分ほど)
 
 1. [Cloudflare](https://dash.cloudflare.com/sign-up) のアカウントを作る (無料プラン)
-2. ダッシュボードで **Workers & Pages → Create → Pages → Connect to Git** を選び、この GitHub リポジトリを接続
-3. ビルド設定 (リポジトリの `wrangler.toml` から自動で入ります。入らない場合だけ手で設定):
-   - Framework preset: `None`
-   - Build command: (空欄)
-   - Build output directory: `public`
-   - Production branch: 公開したいブランチ
-4. **Save and Deploy** → `https://<プロジェクト名>.pages.dev` が発行されます
+2. ダッシュボードの **Workers & Pages → 作成 (Create)** で、GitHub のこのリポジトリを読み込む (Import a repository)
+3. 設定:
+   - Worker の名前 (Project name): **`baseball`** (`wrangler.toml` の `name` と同じにする。変える場合は両方変える)
+   - ブランチ: `claude/happy-volta-cym3lc` (アプリが入っているブランチ)
+   - Build command: 空欄 / Deploy command: `npx wrangler deploy` (初期値のまま)
+4. デプロイすると `https://baseball.<アカウント名>.workers.dev` が発行されます
 5. iPhone の Safari でその URL を開き、共有ボタン →「ホーム画面に追加」
 
 以後は GitHub に push するたびに自動で更新されます。
+
+### 仕組み (Workers)
+
+`wrangler.toml` で `public/` を静的ファイルとして配信し、`/api/*` は `src/worker.js` から `functions/api/` の各ハンドラーに渡します。
+API の結果は Cloudflare のキャッシュに短時間保存し、無料枠の CPU 時間 (1 回 10ms) を超えにくくしています。
 
 ## 手元での確認
 
@@ -62,7 +66,7 @@ Node.js 18 以上が必要です。
 npm test            # パーサーのテスト
 npm run dev:mock    # ダミーデータで画面確認 → http://localhost:8788
 npm run dev         # 実データで確認 (外部サイトにアクセス)
-npm run cf:dev      # Cloudflare 本番と同じ環境で確認 (wrangler)
+npm run cf:dev      # Cloudflare 本番と同じ環境で確認 (wrangler dev)
 ```
 
 ## 表示がおかしいとき (NPB)
@@ -80,7 +84,8 @@ https://<プロジェクト名>.pages.dev/api/npb/debug?url=https://baseball.yah
 
 ```
 public/            画面 (index.html, styles.css, js/ に画面ごとのモジュール、PWA 設定、アイコン)
-functions/api/     API の入口 (Cloudflare Pages Functions)
+src/worker.js      Cloudflare Workers の入口 (静的ファイル配信と /api の振り分け)
+functions/api/     API の各ハンドラー
   npb/schedule.js    GET /api/npb/schedule?date=YYYY-MM-DD
   npb/game.js        GET /api/npb/game?id=...
   npb/standings.js   GET /api/npb/standings          (C / P / IL=交流戦 / OP=オープン戦)

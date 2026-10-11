@@ -6,6 +6,6 @@
     "test": "node --test \"test/*.test.js\"",
     "dev": "node dev/server.mjs",
     "dev:mock": "MOCK=1 node dev/server.mjs",
-    "cf:dev": "npx wrangler pages dev public"
+    "cf:dev": "npx wrangler dev"
   }
 }

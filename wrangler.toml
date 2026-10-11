@@ -1,4 +1,9 @@
-# Cloudflare Pages の設定 (GitHub と接続すると自動で読み込まれます)
-name = "baseball-sokuho"
-pages_build_output_dir = "public"
+# Cloudflare Workers の設定 (GitHub と接続すると、push のたびに自動で公開されます)
+# name は Cloudflare 上の Worker の名前と同じにしてください。
+name = "baseball"
+main = "src/worker.js"
 compatibility_date = "2024-09-23"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"

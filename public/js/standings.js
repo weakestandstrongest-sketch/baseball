@@ -4,7 +4,7 @@ import { state } from './state.js';
 
 const NPB_TABS = [['C', 'セ・リーグ'], ['P', 'パ・リーグ'], ['IL', '交流戦'], ['OP', 'オープン戦']];
 const MLB_TABS = [['AL', 'ア・リーグ'], ['NL', 'ナ・リーグ'], ['WC', 'ワイルドカード']];
-const cache = { npb: null, mlb: null };
+const cache = { npb: {}, mlb: null };
 
 export function standingsView(q) {
   const tab = q.get('lg') || 'C';
@@ -22,7 +22,7 @@ export function standingsView(q) {
       const d = cache.mlb;
       const view = (t) => (detail && t.detailHeaders ? { ...t, headers: t.detailHeaders, rows: t.rows.map((r) => ({ ...r, cells: r.detail })) } : t);
       if (d) body = (d[sub] || []).map((t) => `<h3 class="sec-title">${esc(t.name)}</h3>${standTable(view(t), 'MLB')}`).join('') || emptyState('データがありません');
-    } else if (cache.npb) {
+    } else if (tab in cache.npb) {
       const t = cache.npb[tab];
       body = t && t.tables.length
         ? t.tables.map((x, i) => `<h3 class="sec-title">${esc(i === 0 ? NPB_TABS.find(([k]) => k === tab)[1] : x.title)}</h3>${x.kind === 'matrix' ? matrixTable(x) : standTable(x, 'NPB')}`).join('')
@@ -47,7 +47,7 @@ export function standingsView(q) {
   async function load() {
     try {
       if (isMLB) cache.mlb = await api('/mlb/standings');
-      else cache.npb = await api('/npb/standings');
+      else cache.npb[tab] = (await api(`/npb/standings?lg=${tab}`))[tab] || null;
       error = null;
     } catch (e) { error = e.message; }
     render();
