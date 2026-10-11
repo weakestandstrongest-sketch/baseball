@@ -1,0 +1,26 @@
+# 実際のスポーツナビ / NPB.jp のページを保存する (パーサー調整用)
+name: capture-pages
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - dev/capture.mjs
+      - .github/workflows/capture.yml
+permissions:
+  contents: write
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node dev/capture.mjs
+      - name: commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add test/fixtures/real
+          git commit -m "実ページを保存 (パーサー調整用)" || echo "no changes"
+          git push
