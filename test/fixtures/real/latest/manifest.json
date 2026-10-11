@@ -1,0 +1,108 @@
+{
+  "date": "2026-10-11",
+  "captured": "2026-10-11T12:49:36.855Z",
+  "files": {
+    "yahoo-schedule.html": {
+      "url": "https://baseball.yahoo.co.jp/npb/schedule/?date=2026-10-11",
+      "status": 200,
+      "finalUrl": "https://baseball.yahoo.co.jp/npb/schedule/?date=2026-10-11",
+      "bytes": 418306
+    },
+    "yahoo-game1-top.html": {
+      "url": "https://baseball.yahoo.co.jp/npb/game/2021039475/top",
+      "status": 200,
+      "finalUrl": "https://baseball.yahoo.co.jp/npb/game/2021039475/top",
+      "bytes": 956719
+    },
+    "yahoo-game1-index.html": {
+      "url": "https://baseball.yahoo.co.jp/npb/game/2021039475/index",
+      "status": 200,
+      "finalUrl": "https://baseball.yahoo.co.jp/npb/game/2021039475/top",
+      "bytes": 956719
+    },
+    "yahoo-game1-stats.html": {
+      "url": "https://baseball.yahoo.co.jp/npb/game/2021039475/stats",
+      "status": 200,
+      "finalUrl": "https://baseball.yahoo.co.jp/npb/game/2021039475/stats",
+      "bytes": 946984
+    },
+    "yahoo-game1-text.html": {
+      "url": "https://baseball.yahoo.co.jp/npb/game/2021039475/text",
+      "status": 200,
+      "finalUrl": "https://baseball.yahoo.co.jp/npb/game/2021039475/text",
+      "bytes": 1052708
+    },
+    "yahoo-game1-score.html": {
+      "url": "https://baseball.yahoo.co.jp/npb/game/2021039475/score",
+      "status": 200,
+      "finalUrl": "https://baseball.yahoo.co.jp/npb/game/2021039475/top",
+      "bytes": 956719
+    },
+    "yahoo-game2-top.html": {
+      "url": "https://baseball.yahoo.co.jp/npb/game/2021039478/top",
+      "status": 200,
+      "finalUrl": "https://baseball.yahoo.co.jp/npb/game/2021039478/top",
+      "bytes": 951859
+    },
+    "yahoo-game2-index.html": {
+      "url": "https://baseball.yahoo.co.jp/npb/game/2021039478/index",
+      "status": 200,
+      "finalUrl": "https://baseball.yahoo.co.jp/npb/game/2021039478/top",
+      "bytes": 951859
+    },
+    "yahoo-game2-stats.html": {
+      "url": "https://baseball.yahoo.co.jp/npb/game/2021039478/stats",
+      "status": 200,
+      "finalUrl": "https://baseball.yahoo.co.jp/npb/game/2021039478/stats",
+      "bytes": 941268
+    },
+    "yahoo-game2-text.html": {
+      "url": "https://baseball.yahoo.co.jp/npb/game/2021039478/text",
+      "status": 200,
+      "finalUrl": "https://baseball.yahoo.co.jp/npb/game/2021039478/text",
+      "bytes": 1058829
+    },
+    "yahoo-game2-score.html": {
+      "url": "https://baseball.yahoo.co.jp/npb/game/2021039478/score",
+      "status": 200,
+      "finalUrl": "https://baseball.yahoo.co.jp/npb/game/2021039478/top",
+      "bytes": 951859
+    },
+    "yahoo-standings.html": {
+      "url": "https://baseball.yahoo.co.jp/npb/standings/",
+      "status": 200,
+      "finalUrl": "https://baseball.yahoo.co.jp/npb/standings/",
+      "bytes": 274370
+    },
+    "yahoo-standings-detail1.html": {
+      "url": "https://baseball.yahoo.co.jp/npb/standings/detail/1",
+      "status": 200,
+      "finalUrl": "https://baseball.yahoo.co.jp/npb/standings/detail/1",
+      "bytes": 271349
+    },
+    "yahoo-stats.html": {
+      "url": "https://baseball.yahoo.co.jp/npb/stats/",
+      "status": 200,
+      "finalUrl": "https://baseball.yahoo.co.jp/npb/stats/",
+      "bytes": 268655
+    },
+    "yahoo-stats-list.html": {
+      "url": "https://baseball.yahoo.co.jp/npb/stats/batter?gameKindId=1&type=avg",
+      "status": 200,
+      "finalUrl": "https://baseball.yahoo.co.jp/npb/stats/batter?gameKindId=1&type=avg",
+      "bytes": 244701
+    },
+    "npbjp-schedule-month.html": {
+      "url": "https://npb.jp/games/2026/schedule_10_detail.html",
+      "status": 200,
+      "finalUrl": "https://npb.jp/games/2026/schedule_10_detail.html",
+      "bytes": 96899
+    },
+    "npbjp-cs.html": {
+      "url": "https://npb.jp/cs/2026/schedule_detail.html",
+      "status": 404,
+      "finalUrl": "https://npb.jp/cs/2026/schedule_detail.html",
+      "bytes": 21956
+    }
+  }
+}
