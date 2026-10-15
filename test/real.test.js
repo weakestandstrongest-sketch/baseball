@@ -112,3 +112,43 @@ test('実ページ: npb.jp の月間日程', () => {
   assert.equal(first.status, 'final');
   assert.deepEqual([first.home.score, first.away.score], [2, 2]);
 });
+
+// 試合中のページ (2026/10/15 に保存)。文字速報は新しい順に並び、/score も文字速報になる
+const liveGame = (n) => buildGame({
+  id: 'live' + n, source: 'yahoo', url: '',
+  pages: Object.fromEntries(['top', 'text', 'score'].map((k) => [k === 'score' ? 'live' : k, slimYahoo(k === 'score' ? 'live' : k, R(`live/live${n}-${k}.html`))])),
+});
+
+test('実ページ: 試合中の速報 (打席の順番・投手)', () => {
+  const g = liveGame(1);
+  assert.equal(g.status, 'live');
+  const halves = g.plays.filter((h) => h.half !== 'pre');
+  assert.deepEqual([halves[0].inning, halves[0].half], [1, 'top']);
+  assert.deepEqual([halves.at(-1).inning, halves.at(-1).half], [7, 'top']);
+  assert.equal(halves[0].atBats[0].batter, '度会 隆輝');
+  const abs = halves.flatMap((h) => h.atBats);
+  assert.equal(abs.at(-1).batter, '蝦名 達夫');
+  // 先発と投手交代
+  assert.equal(abs[0].pitcher, '髙橋 遥人');
+  assert.equal(halves[1].atBats[0].pitcher, '尾形 崇斗');
+  const b5 = halves.find((h) => h.inning === 5 && h.half === 'bottom');
+  assert.equal(b5.atBats[0].pitcher, '吉野');
+  const b6 = halves.find((h) => h.inning === 6 && h.half === 'bottom');
+  assert.equal(b6.atBats[0].pitcher, 'ルイーズ');
+  assert.equal(g.current.batter.name, '蝦名 達夫');
+  assert.equal(g.current.pitcher.name, '髙橋 遥人');
+  assert.ok(g.current.lastPlay.includes('蝦名'));
+  // 試合前の情報は先頭のまま、元の順番で
+  assert.match(g.plays[0].events[0].text, /^先発ピッチャー/);
+
+  const g2 = liveGame(2);
+  assert.equal(g2.current.batter.name, '近藤 健介');
+  assert.equal(g2.current.pitcher.name, '北山 亘基');
+});
+
+test('実ページ: 試合後の文字速報は古い順のまま', () => {
+  const g = game();
+  const halves = g.plays.filter((h) => h.half !== 'pre');
+  assert.deepEqual([halves[0].inning, halves[0].half], [1, 'top']);
+  assert.ok(halves[0].atBats[0].pitcher);
+});
