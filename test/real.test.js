@@ -172,3 +172,16 @@ test('打席の状況「一死一二塁」と結果「ショートゴロ 2アウ
   assert.deepEqual(inferStateFromPlays(P('無死満塁', [])).runners, { first: true, second: true, third: true });
   assert.deepEqual(inferStateFromPlays(P('二死一三塁', ['セカンドゴロ 3アウト'])).runners, {});
 });
+
+test('実ページ: 走者の名前を経過から追いかける', async () => {
+  const { trackRunners } = await import('../lib/npb/common.js');
+  const g = liveGame(1);
+  const h5 = g.plays.find((h) => h.inning === 5 && h.half === 'top');
+  // 宮﨑ヒット → 松尾 → 成瀬 送りバント失敗 → 蝦名ヒットで満塁
+  const upTo = (name) => ({ ...h5, atBats: h5.atBats.slice(0, h5.atBats.findIndex((ab) => ab.batter === name) + 1) });
+  assert.deepEqual(trackRunners(upTo('蝦名 達夫')), { 1: '蝦名 達夫', 2: '成瀬 脩人', 3: '宮﨑' });
+  // 代走
+  const pr = { atBats: [{ batter: 'A', situation: '無死走者なし', events: [{ text: '四球を選ぶ 一塁', result: true }] },
+    { batter: 'B', situation: '無死一塁', events: [{ text: '一塁走者 A →代走: C' }] }] };
+  assert.deepEqual(trackRunners(pr), { 1: 'C' });
+});
