@@ -34,7 +34,7 @@ export function gamesView(q) {
     for (let i = -7; i <= 7; i++) days.push(addDays(date, i));
     return days.map((d) => {
       const w = dow(d);
-      return `<a class="day ${d === date ? 'on' : ''} ${d === today ? 'today' : ''} ${w === 0 ? 'sun' : w === 6 ? 'sat' : ''}" href="${href(d, filter)}" ${d === date ? 'id="day-on"' : ''}>
+      return `<a class="day ${d === date ? 'on' : ''} ${d === today ? 'today' : ''} ${w === 0 ? 'sun' : w === 6 ? 'sat' : ''}" href="${href(d, filter)}" data-d="${d}" ${d === date ? 'id="day-on"' : ''}>
         <span class="dw">${WD[w]}</span><span class="dd">${Number(d.slice(8))}</span></a>`;
     }).join('');
   };
@@ -71,6 +71,14 @@ export function gamesView(q) {
     if (!body && loading) body = `<section class="sec"><div class="sk sk-title"></div><div class="cards">${skeleton(4)}</div></section>`;
     const errs = [data.npbErr && `NPB: ${data.npbErr}`, data.mlbErr && `MLB: ${data.mlbErr}`].filter(Boolean);
 
+    // 日付の帯：同じ日の描き直し（試合データが届いたときなど）では今の帯をそのまま使い、スクロールし直さない。
+    // 別の日を押したときは、押した日が今の位置から中央へ 1 回だけ動くようにする
+    const oldDays = document.getElementById('days');
+    const keepDays = oldDays && oldDays.dataset.date === date && oldDays.dataset.filter === filter ? oldDays : null;
+    const keepX = keepDays ? keepDays.scrollLeft : 0;
+    const tapped = !keepDays && oldDays && oldDays.querySelector(`[data-d="${date}"]`);
+    const fromX = tapped ? tapped.getBoundingClientRect().left - oldDays.getBoundingClientRect().left : null;
+
     $app.innerHTML = `
       <header class="lt">
         <div class="lt-row">
@@ -83,16 +91,35 @@ export function gamesView(q) {
         <div class="lt-sub">${esc(fmtDate(date, { year: true }))}${date === today ? '<span class="today-tag">今日</span>' : `<a class="today-link" href="${href(today, filter)}">今日に戻る</a>`}</div>
       </header>
       <div class="sticky-bar">
-        <nav class="days" id="days">${strip()}</nav>
+        <nav class="days" id="days" data-date="${date}" data-filter="${filter}">${strip()}</nav>
         <div class="seg seg-scroll">${FILTERS.map(([k, l]) => `<a class="${k === filter ? 'on' : ''}" href="${href(date, k)}">${l}</a>`).join('')}</div>
       </div>
       <main class="list">
         ${errs.map(errorBox).join('')}
         ${body}
       </main>`;
-    const days = document.getElementById('days');
-    const on = document.getElementById('day-on');
-    if (days && on) days.scrollLeft = on.offsetLeft - days.clientWidth / 2 + on.clientWidth / 2;
+    if (keepDays) {
+      // 付け直すとスクロール位置が 0 に戻るので、今の位置に戻して（中央へ動いている途中なら）続きを動かす
+      const x = keepX, on = keepDays.querySelector('.day.on');
+      document.getElementById('days').replaceWith(keepDays);
+      keepDays.style.scrollBehavior = 'auto';
+      keepDays.scrollLeft = x;
+      keepDays.style.scrollBehavior = '';
+      if (on) {
+        const center = on.offsetLeft - keepDays.clientWidth / 2 + on.clientWidth / 2;
+        if (Math.abs(keepDays.scrollLeft - center) > 1) keepDays.scrollTo({ left: center, behavior: 'smooth' });
+      }
+    } else {
+      const days = document.getElementById('days');
+      const on = document.getElementById('day-on');
+      if (days && on) {
+        const center = on.offsetLeft - days.clientWidth / 2 + on.clientWidth / 2;
+        days.style.scrollBehavior = 'auto';
+        days.scrollLeft = fromX === null ? center : on.offsetLeft - fromX; // まず押した日を元の位置に置く
+        days.style.scrollBehavior = '';
+        if (fromX !== null) requestAnimationFrame(() => days.scrollTo({ left: center, behavior: 'smooth' }));
+      }
+    }
     document.getElementById('pick').onclick = () => openDatePicker(date, (d) => { location.hash = href(d, filter); });
   };
 
