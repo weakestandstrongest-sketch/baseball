@@ -113,10 +113,10 @@ test('実ページ: npb.jp の月間日程', () => {
   assert.deepEqual([first.home.score, first.away.score], [2, 2]);
 });
 
-// 試合中のページ (2026/10/15 に保存)。文字速報は新しい順に並び、/score も文字速報になる
+// 試合中のページ (2026/10/15 に保存。live/ は Actions が上書きするので live-1015/ に固定)。文字速報は新しい順に並び、/score も文字速報になる
 const liveGame = (n) => buildGame({
   id: 'live' + n, source: 'yahoo', url: '',
-  pages: Object.fromEntries(['top', 'text', 'score'].map((k) => [k === 'score' ? 'live' : k, slimYahoo(k === 'score' ? 'live' : k, R(`live/live${n}-${k}.html`))])),
+  pages: Object.fromEntries(['top', 'text', 'score'].map((k) => [k === 'score' ? 'live' : k, slimYahoo(k === 'score' ? 'live' : k, R(`live-1015/live${n}-${k}.html`))])),
 });
 
 test('実ページ: 試合中の速報 (打席の順番・投手)', () => {
