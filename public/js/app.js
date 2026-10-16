@@ -62,6 +62,8 @@ document.addEventListener('visibilitychange', () => {
 });
 
 route();
+// ひび手帳の中で開かれたときは、開けたことを知らせる（ひび手帳はそれまで「開いています…」を出している）
+if (window.parent !== window) { try { window.parent.postMessage({ type: 'baseball:ready' }, '*'); } catch (e) { /* 親がいない */ } }
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }

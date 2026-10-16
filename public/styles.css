@@ -468,6 +468,9 @@ table.stat td.dec-s { color: #6fe5b4; }
 .cc:nth-child(7n + 7) { border-right: 0; }
 .cc.empty { background: rgba(255, 255, 255, 0.012); }
 .cc.has:active { background: var(--card-2); }
+.cc.dh:active { background: none; }
+.cc-g { display: flex; flex-direction: column; align-items: center; gap: 3px; width: 100%; border-radius: 8px; }
+.cc-g:active { background: var(--card-2); }
 .cc.today { background: rgba(255, 181, 71, 0.08); }
 .cc.today .cd { background: var(--accent); color: var(--accent-ink) !important; border-radius: 99px; padding: 0 7px; }
 .cd { font-family: var(--num); font-size: 13.5px; font-weight: 700; position: relative; padding-bottom: 3px; }

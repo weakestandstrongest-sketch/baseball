@@ -163,8 +163,8 @@ function linescore(g) {
   const row = (t, side) => `
     <tr>
       <th class="tm"><span class="tm-bar" style="background:${esc(t.color || '#555')}"></span>${esc(t.short || t.name || '')}</th>
-      ${inns.map((i) => `<td class="${isCur(i.num, side) ? 'cur' : ''} ${Number(i[side]) > 0 ? 'pts' : ''}">${val(i[side])}</td>`).join('')}
-      <td class="r">${val(t.score)}</td><td class="h">${val(t.hits)}</td><td class="h">${val(t.errors)}</td>
+      ${inns.map((i) => `<td class="${isCur(i.num, side) ? 'cur' : ''} ${Number(i[side]) > 0 ? 'pts' : ''}">${esc(val(i[side]))}</td>`).join('')}
+      <td class="r">${esc(val(t.score))}</td><td class="h">${esc(val(t.hits))}</td><td class="h">${esc(val(t.errors))}</td>
     </tr>`;
   return `<div class="ls-scroll"><table class="ls">
     <thead><tr><th></th>${inns.map((i) => `<th>${i.num}</th>`).join('')}<th class="r">計</th><th class="h">安</th><th class="h">失</th></tr></thead>

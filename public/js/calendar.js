@@ -14,11 +14,17 @@ function defaultTeam() {
 
 export function calendarView(q) {
   const today = jstToday();
-  const key = q.get('t') || defaultTeam();
-  const month = q.get('m') || today.slice(0, 7);
+  const findTeam = (k) => {
+    const [l, c] = String(k).split(':');
+    return l === 'mlb' ? MLB_TEAM_LIST.find((t) => String(t.id) === c) : l === 'npb' ? NPB_TEAM_LIST.find((t) => t.code === c) : null;
+  };
+  // URL の値がおかしいときは、いつものチーム・今月で表示する（真っ白にしない・おかしな値を保存しない）
+  let key = q.get('t') || defaultTeam();
+  if (!findTeam(key)) key = findTeam(settings.calTeam) ? settings.calTeam : 'npb:g';
+  const month = /^\d{4}-(0[1-9]|1[0-2])$/.test(q.get('m') || '') ? q.get('m') : today.slice(0, 7);
   const [lg, code] = key.split(':');
   const isMLB = lg === 'mlb';
-  const team = isMLB ? MLB_TEAM_LIST.find((t) => String(t.id) === code) : NPB_TEAM_LIST.find((t) => t.code === code);
+  const team = findTeam(key);
   if (key !== settings.calTeam) { settings.calTeam = key; saveSettings(); }
   const href = (t, m) => `#/calendar?t=${t}&m=${m}`;
   const self = { name: 'calendar', refresh: () => load() };
@@ -58,7 +64,14 @@ export function calendarView(q) {
         return `<div class="cg">${esc(pair)}</div>${res}`;
       }).join('');
       const g0 = list[0];
-      const link = g0 ? `#/game/${isMLB ? 'mlb' : 'npb'}/${encodeURIComponent(g0.id)}` : null;
+      const gameHref = (g) => `#/game/${isMLB ? 'mlb' : 'npb'}/${encodeURIComponent(g.id)}`;
+      // ダブルヘッダーは試合ごとに押せるようにする
+      if (list.length > 1) {
+        const cls2 = ['cc', d === today ? 'today' : '', w === 6 ? 'sat' : '', w === 0 ? 'sun' : '', 'has', 'dh'].join(' ');
+        const parts = inner.split('<div class="cg">').filter(Boolean).map((x, k) => `<a class="cc-g" href="${gameHref(list[k])}"><div class="cg">${x}</a>`);
+        return `<div class="${cls2}"><span class="cd ${home ? 'home' : ''}">${Number(d.slice(8))}</span>${parts.join('')}</div>`;
+      }
+      const link = g0 ? gameHref(g0) : null;
       const cls = ['cc', d === today ? 'today' : '', w === 6 ? 'sat' : '', w === 0 ? 'sun' : '', list.length ? 'has' : ''].join(' ');
       return `<${link ? `a href="${link}"` : 'div'} class="${cls}">
         <span class="cd ${home ? 'home' : ''}">${Number(d.slice(8))}</span>${inner}</${link ? 'a' : 'div'}>`;

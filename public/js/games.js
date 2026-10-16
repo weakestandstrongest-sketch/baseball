@@ -20,7 +20,8 @@ const FILTERS = [['all', 'すべて'], ['C', 'セ・リーグ'], ['P', 'パ・�
 
 export function gamesView(q) {
   const today = jstToday();
-  const date = q.get('d') || state.listDate || today;
+  const okDate = (d) => /^\d{4}-\d{2}-\d{2}$/.test(d || '') && !Number.isNaN(Date.parse(d + 'T00:00:00Z'));
+  const date = [q.get('d'), state.listDate].find(okDate) || today; // おかしな日付の URL でも真っ白にしない
   const filter = q.get('f') || state.listFilter || 'all';
   state.listDate = date === today ? null : date;
   state.listFilter = filter === 'all' ? null : filter;
@@ -109,7 +110,8 @@ export function gamesView(q) {
       keepDays.style.scrollBehavior = '';
       if (on) {
         const center = on.offsetLeft - keepDays.clientWidth / 2 + on.clientWidth / 2;
-        if (Math.abs(keepDays.scrollLeft - center) > 1) keepDays.scrollTo({ left: center, behavior: 'smooth' });
+        // 中央へ動いている途中だったときだけ続きを動かす（自分で帯をスクロールしていたら、自動更新で戻さない）
+        if (keepDays.dataset.centering && Math.abs(keepDays.scrollLeft - center) > 1) keepDays.scrollTo({ left: center, behavior: 'smooth' });
       }
     } else {
       const days = document.getElementById('days');
@@ -119,7 +121,11 @@ export function gamesView(q) {
         days.style.scrollBehavior = 'auto';
         days.scrollLeft = fromX === null ? center : on.offsetLeft - fromX; // まず押した日を元の位置に置く
         days.style.scrollBehavior = '';
-        if (fromX !== null) requestAnimationFrame(() => days.scrollTo({ left: center, behavior: 'smooth' }));
+        if (fromX !== null) {
+          days.dataset.centering = '1';
+          requestAnimationFrame(() => days.scrollTo({ left: center, behavior: 'smooth' }));
+          setTimeout(() => { delete days.dataset.centering; }, 900);
+        }
       }
     }
     document.getElementById('pick').onclick = () => openDatePicker(date, (d) => { location.hash = href(d, filter); });
