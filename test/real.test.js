@@ -152,3 +152,23 @@ test('実ページ: 試合後の文字速報は古い順のまま', () => {
   assert.deepEqual([halves[0].inning, halves[0].half], [1, 'top']);
   assert.ok(halves[0].atBats[0].pitcher);
 });
+
+test('実ページ: 試合中は文字速報から走者・アウト・守備位置を出す', () => {
+  const g = liveGame(1);
+  // 7回表は阪神が守備。先発オーダー + 「守備交代:レフト 前川 守備変更: 髙寺 レフト→ライト」
+  assert.equal(g.current.defense.left, '前川');
+  assert.equal(g.current.defense.right, '髙寺');
+  assert.equal(g.current.defense.catcher, '伏見 寅威');
+  assert.equal(g.current.defense.pitcher, g.current.pitcher.name);
+});
+
+test('打席の状況「一死一二塁」と結果「ショートゴロ 2アウト二塁」から走者とアウト', async () => {
+  const { inferStateFromPlays } = await import('../lib/npb/common.js');
+  const P = (situation, evs) => [{ inning: 9, half: 'bottom', events: [], atBats: [{ batter: 'X', situation, events: evs.map((text) => ({ text })) }] }];
+  assert.deepEqual(inferStateFromPlays(P('二死二塁', [])).runners, { second: true });
+  assert.equal(inferStateFromPlays(P('二死二塁', [])).outs, 2);
+  const s = inferStateFromPlays(P('一死一二塁', ['ショートゴロ 2アウト二塁']));
+  assert.deepEqual([s.outs, s.runners], [2, { second: true }]);
+  assert.deepEqual(inferStateFromPlays(P('無死満塁', [])).runners, { first: true, second: true, third: true });
+  assert.deepEqual(inferStateFromPlays(P('二死一三塁', ['セカンドゴロ 3アウト'])).runners, {});
+});
