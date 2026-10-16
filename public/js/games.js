@@ -27,6 +27,7 @@ export function gamesView(q) {
   const data = { npb: null, mlb: null, npbErr: null, mlbErr: null };
   const href = (d, f) => `#/?d=${d}&f=${f}`;
   const self = { name: 'games', refresh: () => load() };
+  let firstRender = true;
   state.view = self;
 
   const strip = () => {
@@ -94,10 +95,11 @@ export function gamesView(q) {
         <nav class="days" id="days" data-date="${date}" data-filter="${filter}">${strip()}</nav>
         <div class="seg seg-scroll">${FILTERS.map(([k, l]) => `<a class="${k === filter ? 'on' : ''}" href="${href(date, k)}">${l}</a>`).join('')}</div>
       </div>
-      <main class="list">
+      <main class="list${firstRender ? ' list-in' : ''}">
         ${errs.map(errorBox).join('')}
         ${body}
       </main>`;
+    firstRender = false;
     if (keepDays) {
       // 付け直すとスクロール位置が 0 に戻るので、今の位置に戻して（中央へ動いている途中なら）続きを動かす
       const x = keepX, on = keepDays.querySelector('.day.on');

@@ -57,6 +57,9 @@ small { color: var(--text-2); font-size: 0.8em; }
 #app { min-height: 60vh; }
 #app.enter { animation: enter 0.28s ease-out; }
 @keyframes enter { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+/* 試合一覧で日付を変えたときは、一覧だけをふわっと出す */
+.list.list-in { animation: listIn 0.2s ease-out; }
+@keyframes listIn { from { opacity: 0.35; } to { opacity: 1; } }
 
 /* ============ タブバー ============ */
 .tabbar {
