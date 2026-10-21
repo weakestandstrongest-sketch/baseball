@@ -1,5 +1,5 @@
 // アプリ本体はネットワーク優先 + オフライン時はキャッシュ。API はキャッシュしない。
-const CACHE = 'shell-v11';
+const CACHE = 'shell-v12';
 const SHELL = ['./', 'index.html', 'styles.css', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/apple-touch-icon.png',
   ...['app', 'util', 'state', 'teams', 'games', 'game', 'calendar', 'standings', 'stats', 'settings', 'picker'].map((m) => `js/${m}.js`)];
 
@@ -12,6 +12,7 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
   if (e.request.method !== 'GET' || url.origin !== location.origin || url.pathname.startsWith('/api/')) return;
+  if (url.pathname.endsWith('/hibi-bridge.html')) return; // ひび手帳のバックアップ用の窓口はキャッシュしない
   e.respondWith(
     fetch(e.request).then((res) => {
       if (res.ok) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(e.request, copy)); }
