@@ -185,3 +185,9 @@ test('実ページ: 走者の名前を経過から追いかける', async () => 
     { batter: 'B', situation: '無死一塁', events: [{ text: '一塁走者 A →代走: C' }] }] };
   assert.deepEqual(trackRunners(pr), { 1: 'C' });
 });
+
+test('実ページ: 試合のない日に、直近の日の試合を出さない（日本シリーズ終了後のバグ）', () => {
+  // 2026/10/11 のページを、11/5 の問い合わせとして読むと、ページの日付（10/11）が違うので何も出さない
+  assert.deepEqual(parseYahooSchedule(R('yahoo-schedule.html'), '2026-11-05'), []);
+  assert.equal(parseYahooSchedule(R('yahoo-schedule.html'), '2026-10-11').length, 2);
+});
