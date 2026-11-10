@@ -16,6 +16,8 @@
   <link rel="icon" href="icons/favicon-32.png" type="image/png" sizes="32x32">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <link rel="stylesheet" href="styles.css">
+  <!-- ひび手帳の中で開いたとき：シートはもうステータスバーの下にあるので、上の切り欠きぶんの空白をあけない -->
+  <script>if (window.parent !== window) document.documentElement.classList.add('in-frame');</script>
 </head>
 <body>
   <div id="app"></div>
