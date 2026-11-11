@@ -133,6 +133,7 @@ function hero(g) {
   const score = (t) => (t.score === null || t.score === undefined ? '' : t.score);
   const side = (t, other, cls) => `
     <div class="hero-team ${cls} ${done && t.score < other.score ? 'lose' : ''}">
+      <span class="hero-ha">${cls === 'away' ? 'AWAY' : 'HOME'}</span>
       ${badge(t, 'xl')}
       <div class="hero-nm">${esc(t.name)}</div>
       ${t.record ? `<div class="hero-rec">${esc(t.record)}</div>` : ''}
@@ -144,7 +145,7 @@ function hero(g) {
     <div class="hero-main">
       ${side(g.away, g.home, 'away')}
       <div class="hero-mid">
-        ${showScore ? `<div class="hero-score"><b class="${done && g.away.score > g.home.score ? 'w' : ''}">${score(g.away)}</b><span>-</span><b class="${done && g.home.score > g.away.score ? 'w' : ''}">${score(g.home)}</b></div>` : `<div class="hero-vs">${esc(g.startTime || 'vs')}</div>`}
+        ${showScore ? `<div class="hero-score"><b class="${done && g.away.score > g.home.score ? 'w' : ''}">${score(g.away)}</b><span></span><b class="${done && g.home.score > g.away.score ? 'w' : ''}">${score(g.home)}</b></div>` : `<div class="hero-vs">${esc(g.startTime || 'vs')}</div>`}
         ${statusPill(g, { big: true })}
       </div>
       ${side(g.home, g.away, 'home')}

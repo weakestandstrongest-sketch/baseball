@@ -27,7 +27,7 @@ export function statsView(q) {
     } else if (loaded) body = emptyState('成績データがありません', 'シーズン前や開催前の場合は表示されません');
     else if (!error) body = `<div class="boards">${skeleton(4, 'sk-board')}</div>`;
     $app.innerHTML = `
-      <header class="lt"><div class="lt-row"><h1>個人成績</h1></div></header>
+      <header class="lt"><div class="lt-row"><h1><span class="kicker">LEADERS</span>個人成績</h1></div></header>
       <div class="sticky-bar">
         <div class="seg seg-scroll">${LEAGUES.map(([k, l]) => `<a class="${(k === 'MLB' ? isMLB : k === lg) ? 'on' : ''}" href="${href(k)}">${l}</a>`).join('')}</div>
         <div class="sub-row">

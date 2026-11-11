@@ -30,7 +30,7 @@ export function standingsView(q) {
     }
     if (!body && !error) body = `<div class="sk sk-title"></div>${skeleton(1, 'sk-table')}`;
     $app.innerHTML = `
-      <header class="lt"><div class="lt-row"><h1>順位表</h1></div></header>
+      <header class="lt"><div class="lt-row"><h1><span class="kicker">STANDINGS</span>順位表</h1></div></header>
       <div class="sticky-bar">
         <div class="seg seg-scroll">
           ${NPB_TABS.map(([k, l]) => `<a class="${k === tab ? 'on' : ''}" href="#/standings?lg=${k}">${l}</a>`).join('')}

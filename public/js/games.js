@@ -84,7 +84,7 @@ export function gamesView(q) {
     $app.innerHTML = `
       <header class="lt">
         <div class="lt-row">
-          <h1>試合</h1>
+          <h1><span class="kicker">${date === today ? 'TODAY' : 'MATCHDAY'} · ${date.slice(5).replace('-', '.')}</span>試合</h1>
           <div class="lt-act">
             ${liveCount ? `<span class="live-cnt"><i class="dot"></i>${liveCount}試合 速報中</span>` : ''}
             <button class="icon-btn" id="pick" aria-label="日付を選ぶ">${icon('calendar', 20)}</button>
@@ -152,7 +152,7 @@ export function gameCard(g) {
   const row = (t, other) => {
     const win = done && t.score > other.score;
     const lose = done && t.score < other.score;
-    return `<div class="gc-team ${win ? 'win' : ''} ${lose ? 'lose' : ''}">
+    return `<div class="gc-team ${win ? 'win' : ''} ${lose ? 'lose' : ''}" style="--tc:${esc(t.color || '#555')}">
       ${badge(t)}
       <span class="nm">${esc(t.name)}${isFav(g.league, t) ? `<i class="fav-ic">${icon('star', 12)}</i>` : ''}</span>
       ${t.record ? `<span class="rec">${esc(t.record)}</span>` : ''}
@@ -162,7 +162,7 @@ export function gameCard(g) {
   };
   const tag = g.series || (g.leagueGroup === 'CS' ? 'CS' : g.leagueGroup === 'JS' ? '日本シリーズ' : '');
   return `
-  <a class="gc ${g.status}" href="#/game/${lg}/${encodeURIComponent(g.id)}">
+  <a class="gc ${g.status}" style="--ca:${esc(g.away.color || '#444')};--ch:${esc(g.home.color || '#444')}" href="#/game/${lg}/${encodeURIComponent(g.id)}">
     <div class="gc-head">
       ${tag ? `<span class="tag">${esc(tag)}</span>` : `<span class="venue">${icon('stadium', 13)}${esc(g.venue || '')}</span>`}
       ${statusPill(g)}

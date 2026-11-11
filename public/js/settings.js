@@ -14,7 +14,7 @@ export function settingsView() {
 
   const render = () => {
     $app.innerHTML = `
-      <header class="lt"><div class="lt-row"><h1>設定</h1></div></header>
+      <header class="lt"><div class="lt-row"><h1><span class="kicker">SETTINGS</span>設定</h1></div></header>
       <main class="list settings">
         <h3 class="sec-title">お気に入りチーム</h3>
         <div class="card pad">

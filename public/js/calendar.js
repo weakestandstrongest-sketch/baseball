@@ -80,7 +80,7 @@ export function calendarView(q) {
     const [yy, mm] = month.split('-');
     $app.innerHTML = `
       <header class="lt">
-        <div class="lt-row"><h1>カレンダー</h1>
+        <div class="lt-row"><h1><span class="kicker">SCHEDULE</span>カレンダー</h1>
           <div class="seg seg-sm">
             <a class="${isMLB ? '' : 'on'}" href="${href(settings.favorites.find((f) => f.startsWith('npb:')) || 'npb:g', month)}">NPB</a>
             <a class="${isMLB ? 'on' : ''}" href="${href(settings.favorites.find((f) => f.startsWith('mlb:')) || 'mlb:119', month)}">MLB</a>

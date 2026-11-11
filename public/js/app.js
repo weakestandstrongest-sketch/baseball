@@ -35,6 +35,7 @@ function route() {
   const nav = parts[0] === 'game' ? null : parts[0] || 'games';
   tabbar.querySelectorAll('a').forEach((a) => a.classList.toggle('on', a.dataset.nav === nav));
   document.body.classList.toggle('in-game', parts[0] === 'game');
+  document.body.dataset.nav = nav || 'game';
   if (!samePage) {
     $app.classList.remove('enter');
     void $app.offsetWidth; // アニメーションを毎回やり直す

@@ -587,6 +587,199 @@ body.sheet-open { overflow: hidden; }
 .dp-btn { flex: 1; padding: 12px; border-radius: 14px; background: var(--accent); color: var(--accent-ink); font-weight: 800; font-size: 15px; }
 .dp-btn.ghost { background: var(--card-2); color: var(--text); border: 1px solid var(--line); }
 
+/* ===================================================================
+   NIGHT GAME — 中継のスコアボードのような見た目
+   真っ黒の地・チームカラーの光・細長い大きな数字（Barlow Condensed）・ライムの差し色
+   =================================================================== */
+:root {
+  --bg: #000; --bg-2: #07080a; --card: #0b0c0f; --card-2: #121318; --card-3: #1d1f26;
+  --line: rgba(255, 255, 255, 0.07); --line-2: rgba(255, 255, 255, 0.13);
+  --text: #fff; --text-2: #9a9ea8; --text-3: #5c606b;
+  --accent: #d4ff3a; --accent-2: #a8f03a; --accent-ink: #0a0d00;
+  --live: #ff3b4f; --jp: #ffe27a;
+  --cond: "Barlow Condensed", "SF Compact Display", -apple-system, "Hiragino Sans", sans-serif;
+  --num: var(--cond);
+  --r-lg: 22px; --r-md: 15px;
+}
+body { background: #000; font-feature-settings: "palt"; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: 340px; pointer-events: none; z-index: -1;
+  background: radial-gradient(90% 100% at 85% -20%, rgba(212, 255, 58, 0.09), transparent 60%), radial-gradient(80% 90% at 0% -30%, rgba(80, 120, 255, 0.10), transparent 60%); }
+body[data-nav="game"]::before { display: none; }
+::selection { background: var(--accent); color: var(--accent-ink); }
+
+/* 見出し：小さな英字のキッカー＋大きく太い日本語 */
+.lt { padding: calc(var(--safe-top) + 18px) 20px 8px; }
+.lt h1 { font-size: 36px; font-weight: 900; letter-spacing: -0.03em; line-height: 1.05; }
+.kicker { display: block; font-family: var(--cond); font-size: 13px; font-weight: 700; letter-spacing: 0.22em; color: var(--accent); margin-bottom: 4px; }
+.lt-sub { font-family: var(--cond); font-size: 15px; font-weight: 600; letter-spacing: 0.04em; color: var(--text-2); margin-top: 6px; }
+.today-tag { background: var(--accent); color: var(--accent-ink); font-family: var(--cond); font-size: 12px; letter-spacing: 0.12em; padding: 1px 8px; border-radius: 4px; }
+.today-link { color: var(--accent); font-family: -apple-system, "Hiragino Sans", sans-serif; }
+.live-cnt { background: transparent; border: 1px solid rgba(255, 59, 79, 0.5); color: #ff6b7b; font-family: var(--cond); font-size: 13px; letter-spacing: 0.06em; padding: 5px 11px; }
+.icon-btn { background: rgba(255, 255, 255, 0.06); border: 1px solid var(--line-2); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+.icon-btn.glass { background: rgba(0, 0, 0, 0.35); border-color: rgba(255, 255, 255, 0.16); backdrop-filter: blur(20px) saturate(1.6); -webkit-backdrop-filter: blur(20px) saturate(1.6); }
+
+/* 日付の帯：箱をやめて、選んだ日だけ白く光る */
+.sticky-bar { background: linear-gradient(#000 72%, rgba(0, 0, 0, 0)); padding-bottom: 12px; }
+.days { gap: 2px; padding: 6px 14px 10px; }
+.day { width: 48px; height: 62px; background: transparent; border: 0; border-radius: 16px; gap: 1px; transition: background 0.2s; }
+.day .dw { font-size: 11px; color: var(--text-3); }
+.day .dd { font-size: 26px; font-weight: 700; color: var(--text-2); line-height: 1; }
+.day.today .dd { color: var(--text); }
+.day.today::after { background: var(--accent); bottom: 5px; width: 5px; height: 5px; }
+.day.on { background: #fff; box-shadow: 0 8px 26px rgba(255, 255, 255, 0.16); }
+.day.on .dd, .day.on .dw { color: #000; }
+.day.on.today::after { background: #000; }
+
+/* 切り替え：黒いレールの上を白いチップが動く */
+.seg { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--line); border-radius: 99px; padding: 3px; }
+.seg > a, .seg > button { border-radius: 99px; font-weight: 700; font-size: 13.5px; color: var(--text-2); }
+.seg > .on { background: #fff; color: #000; box-shadow: 0 4px 14px rgba(255, 255, 255, 0.12); }
+.team-seg > button.on { box-shadow: inset 0 -3px 0 var(--c); }
+
+/* セクション見出し：字間を広げて、右に細い線 */
+.sec-title { font-size: 12px; letter-spacing: 0.16em; color: var(--text-2); margin: 26px 2px 10px; }
+.sec-title::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--line-2), transparent); margin-left: 6px; }
+.sec-title .cnt { background: transparent; border: 1px solid var(--line-2); font-family: var(--cond); font-size: 12px; letter-spacing: 0.04em; color: var(--text-2); }
+.sec-title .ic { color: var(--accent); }
+.cards { gap: 12px; }
+
+/* 試合カード：左からチームカラーが差しこむ、中継のスコアボード */
+.gc { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 14px 16px 14px; isolation: isolate; }
+.gc::after { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--ca) 17%, transparent), transparent 55%) top / 100% 50% no-repeat,
+              linear-gradient(90deg, color-mix(in srgb, var(--ch) 17%, transparent), transparent 55%) bottom / 100% 50% no-repeat; opacity: 0.9; }
+.gc.live { border-color: rgba(255, 59, 79, 0.45); box-shadow: 0 0 0 1px rgba(255, 59, 79, 0.12), 0 14px 40px -12px rgba(255, 59, 79, 0.35); }
+.gc.live::before { display: none; }
+.gc-head { margin-bottom: 10px; }
+.gc-head .venue { font-size: 11.5px; letter-spacing: 0.02em; color: var(--text-3); }
+.tag { background: transparent; border: 1px solid rgba(212, 255, 58, 0.35); color: var(--accent); border-radius: 6px; font-size: 11px; letter-spacing: 0.02em; }
+.gc-teams { gap: 8px; }
+.gc-team { gap: 12px; }
+.gc-team::before { content: ""; position: absolute; left: -16px; top: 3px; bottom: 3px; width: 3px; border-radius: 0 3px 3px 0; background: var(--tc); box-shadow: 0 0 12px var(--tc); }
+.gc-team .nm { font-size: 17px; font-weight: 800; letter-spacing: -0.01em; }
+.gc-team .rec { font-size: 13px; font-weight: 600; letter-spacing: 0.03em; }
+.gc-team .sc { font-size: 40px; font-weight: 700; line-height: 0.9; min-width: 34px; letter-spacing: -0.01em; }
+.gc-team.win .sc { text-shadow: 0 0 24px rgba(255, 255, 255, 0.35); }
+.gc-team.lose .nm, .gc-team.lose .sc { color: #4e525c; }
+.gc-team.lose::before { opacity: 0.35; box-shadow: none; }
+.gc-team .win-mark { right: -12px; border-right-color: var(--accent); }
+.tb { border-radius: calc(var(--s) * 0.32); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -1px 0 rgba(0, 0, 0, 0.25), 0 4px 14px color-mix(in srgb, var(--c) 40%, transparent); }
+.gc-outs, .gc-time { border-left-color: var(--line-2); }
+.gc-time b { font-size: 30px; font-weight: 700; line-height: 1; letter-spacing: 0.01em; }
+.gc-time small, .gc-outs small { font-size: 10px; letter-spacing: 0.1em; }
+.gc-outs i { width: 10px; height: 10px; }
+.gc-outs i.on { box-shadow: 0 0 10px var(--out); }
+.gc-foot { border-top: 1px dashed var(--line-2); font-size: 12px; }
+.nt { border-radius: 4px; }
+
+/* ステータス：試合中は赤く光り、終了は細い枠 */
+.pill { font-family: var(--cond); font-size: 13.5px; font-weight: 700; letter-spacing: 0.06em; padding: 3px 10px; }
+.pill.live { background: var(--live); box-shadow: 0 0 18px rgba(255, 59, 79, 0.55); }
+.pill.final { background: transparent; border: 1px solid var(--line-2); color: var(--text-2); font-family: -apple-system, "Hiragino Sans", sans-serif; font-size: 11.5px; letter-spacing: 0.02em; }
+.pill.pre { background: #fff; color: #000; }
+.pill.big { font-size: 15px; padding: 4px 14px; }
+.pill.big.final { font-size: 12.5px; }
+
+/* 下のタブバー：黒いガラスの浮かんだ板、選んだところは白くライトの点 */
+.tabbar { left: 14px; right: 14px; height: 64px; border-radius: 32px; background: rgba(14, 15, 19, 0.72); border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(28px) saturate(1.8); -webkit-backdrop-filter: blur(28px) saturate(1.8); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 18px 40px rgba(0, 0, 0, 0.6); }
+.tabbar a { color: #5f636d; position: relative; }
+.tabbar a.on { color: #fff; }
+.tabbar a.on .ic { filter: none; }
+.tabbar a.on::after { content: ""; position: absolute; bottom: 6px; width: 4px; height: 4px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+
+/* 試合の画面の上：2チームの色が斜めに分かれる大きなスコアボード */
+.hero { padding: calc(var(--safe-top) + 62px) 18px 26px;
+  background:
+    linear-gradient(115deg, color-mix(in srgb, var(--ca) 70%, #000) 0%, color-mix(in srgb, var(--ca) 22%, #000) 46%, transparent 46.2%),
+    linear-gradient(115deg, transparent 53.8%, color-mix(in srgb, var(--ch) 22%, #000) 54%, color-mix(in srgb, var(--ch) 70%, #000) 100%),
+    #000; }
+.hero::before { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(60% 60% at 50% 45%, rgba(0, 0, 0, 0.75), transparent 75%), repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.025) 0 2px, transparent 2px 9px); }
+.hero::after { height: 70px; background: linear-gradient(transparent, #000); }
+.hero-series { font-family: -apple-system, "Hiragino Sans", sans-serif; color: var(--accent); font-size: 11.5px; letter-spacing: 0.12em; margin-bottom: 16px; }
+.hero-ha { font-family: var(--cond); font-size: 11px; font-weight: 700; letter-spacing: 0.3em; color: rgba(255, 255, 255, 0.55); margin-bottom: -2px; }
+.hero-nm { font-size: 17px; font-weight: 900; letter-spacing: -0.01em; }
+.hero-rec { font-size: 13px; letter-spacing: 0.04em; color: rgba(255, 255, 255, 0.6); }
+.hero-team.lose .hero-nm { color: rgba(255, 255, 255, 0.45); }
+.hero-team.lose .tb { filter: saturate(0.4) brightness(0.75); }
+.hero-score { gap: 14px; }
+.hero-score b { font-size: 92px; font-weight: 700; line-height: 0.82; letter-spacing: -0.02em; color: rgba(255, 255, 255, 0.38); min-width: 0; }
+.hero-score b.w { color: #fff; text-shadow: 0 0 40px rgba(255, 255, 255, 0.35); }
+.hero-score span { width: 2px; height: 46px; border-radius: 2px; background: rgba(255, 255, 255, 0.22); transform: skewX(-25deg); }
+.hero-vs { font-size: 56px; font-weight: 700; letter-spacing: 0.01em; line-height: 0.9; }
+.hero-mid { gap: 12px; }
+.hero-meta { margin-top: 18px; font-size: 12px; color: rgba(255, 255, 255, 0.6); letter-spacing: 0.02em; }
+.tabs.stuck { background: rgba(0, 0, 0, 0.78); backdrop-filter: blur(24px) saturate(1.8); -webkit-backdrop-filter: blur(24px) saturate(1.8); }
+.tabs .seg > a { font-size: 14.5px; }
+
+/* カード・表 */
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 22px; }
+.sec-title + .card, .card.list-card { box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03) inset; }
+.ls-card { background: linear-gradient(180deg, #0f1014, #08090b); }
+.ls thead th { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; color: var(--text-3); }
+.ls td { font-size: 22px; font-weight: 600; color: #8b8f99; }
+.ls td.r { font-size: 26px; font-weight: 700; color: #fff; }
+.ls td.cur { color: var(--accent-ink); background: var(--accent); border-radius: 8px; box-shadow: 0 0 16px rgba(212, 255, 58, 0.45); }
+.ls .r { border-left-color: var(--line-2); }
+.ls th.tm { font-size: 14px; }
+.tm-bar { width: 4px; height: 18px; box-shadow: 0 0 10px currentColor; }
+table.stat { font-size: 16px; }
+table.stat th { background: #0f1014; font-size: 11px; letter-spacing: 0.06em; color: var(--text-3); }
+table.stat td { font-weight: 600; }
+table.stat .nm, table.stat tbody tr:nth-child(even) td.nm { background: var(--card); font-size: 14px; }
+table.stat tbody tr:nth-child(even) td { background: rgba(255, 255, 255, 0.015); }
+table.stat tbody tr:nth-child(even) td.nm { background: #0e0f12; }
+table.stat th.nm { background: #0f1014; }
+table.stat td.hit { color: var(--accent); }
+table.stat td.hr { background: rgba(255, 59, 79, 0.32) !important; }
+table.stat tr.total td { background: #15161b !important; }
+.stand td.rank { font-size: 20px; }
+.stand td.rank.top { color: var(--accent); text-shadow: 0 0 12px rgba(212, 255, 58, 0.5); }
+.stand tr.fav td { background: rgba(212, 255, 58, 0.07) !important; }
+.slist th.sorted { color: var(--accent); box-shadow: inset 0 -2px 0 var(--accent); }
+.board-t { font-size: 12px; letter-spacing: 0.16em; }
+.bt-val { font-size: 40px; font-weight: 700; line-height: 1; text-shadow: 0 0 22px rgba(212, 255, 58, 0.35); }
+.medal { background: var(--accent); color: var(--accent-ink); box-shadow: 0 0 16px rgba(212, 255, 58, 0.45); font-size: 17px; }
+.br-rank { font-size: 18px; }
+.br-val { font-size: 19px; }
+.board-row.fav { background: rgba(212, 255, 58, 0.06); }
+
+/* 速報 */
+.sit-inn { font-family: -apple-system, "Hiragino Sans", sans-serif; color: #ff6b7b; }
+.bso b { font-size: 18px; }
+.bso i { background: #1a1c22; }
+.field-card { background: radial-gradient(110% 90% at 50% 0%, #133018, #050a06); }
+.field .base.on rect { fill: var(--accent); }
+.field .glow { fill: rgba(212, 255, 58, 0.35); }
+.field .runner rect { stroke: var(--accent); }
+.mu-l { letter-spacing: 0.14em; font-size: 11px; }
+.pt-speed { font-size: 19px; }
+.result-card.scoring { border-color: rgba(212, 255, 58, 0.4); background: linear-gradient(90deg, rgba(212, 255, 58, 0.12), var(--card) 65%); }
+.ab.scoring { background: linear-gradient(90deg, rgba(212, 255, 58, 0.09), transparent 70%); }
+.tl-score, .inn-runs { font-family: var(--cond); font-size: 14px; letter-spacing: 0.04em; }
+.abnav button { background: rgba(255, 255, 255, 0.05); border-color: var(--line-2); }
+
+/* カレンダー */
+.cal-title b { font-size: 26px; font-weight: 700; color: #fff; letter-spacing: 0.02em; }
+.cal-rec { font-size: 18px; }
+.cd { font-size: 15px; }
+.cc.today { background: rgba(212, 255, 58, 0.06); }
+.cr { font-size: 22px; }
+.tp.on { background: color-mix(in srgb, var(--c) 22%, #000); }
+
+/* 日付のシート・設定 */
+.sheet { background: #0c0d10; border-color: var(--line-2); }
+.dp-day { font-size: 20px; background: #121318; }
+.dp-day.on { background: #fff; color: #000 !important; box-shadow: 0 4px 18px rgba(255, 255, 255, 0.2); }
+.dp-day.today { box-shadow: inset 0 0 0 1.5px var(--accent); }
+.dp-btn { background: #fff; color: #000; border-radius: 99px; }
+.dp-btn.ghost { background: transparent; color: #fff; border: 1px solid var(--line-2); }
+.dp-head b { font-size: 24px; }
+.sw:checked { background: var(--accent); }
+.sw:checked::after { background: #000; }
+.fchip.on { box-shadow: 0 0 16px color-mix(in srgb, var(--c) 35%, transparent); }
+
 /* ひび手帳の中で開いたとき（index.html で in-frame を付ける）：上の切り欠きぶんの空白をあけない
    （iPhone のアプリ版のひび手帳では、中の画面にもその幅が渡されて、上が大きくあいていた） */
 :root.in-frame { --safe-top: 0px; }
@@ -629,3 +822,30 @@ html.mono-l .zone .sz { fill: rgba(0, 0, 0, 0.03); stroke: rgba(0, 0, 0, 0.7); }
 html.mono-l .zone .grid line { stroke: rgba(0, 0, 0, 0.18); }
 html.mono-l .zone .plate { fill: rgba(0, 0, 0, 0.45); }
 html.mono-l .sheet-bg { background: rgba(0, 0, 0, 0.3); }
+
+/* NIGHT GAME の白黒（ひび手帳のモノクロモード）：光の飾りは消し、白と黒を入れかえる */
+html.mono-d body::before, html.mono-l body::before { display: none; }
+html.mono-l .day.on, html.mono-l .seg > .on, html.mono-l .pill.pre, html.mono-l .dp-day.on, html.mono-l .dp-btn { background: #000; color: #fff !important; box-shadow: none; }
+html.mono-l .day.on .dd, html.mono-l .day.on .dw { color: #fff; }
+html.mono-l .day.on.today::after { background: #fff; }
+html.mono-l .seg { background: rgba(0, 0, 0, 0.04); }
+html.mono-l .sticky-bar { background: linear-gradient(#fff 72%, rgba(255, 255, 255, 0)); }
+html.mono-l .gc-team.lose .nm, html.mono-l .gc-team.lose .sc { color: #aaa; }
+html.mono-l .gc-team.win .sc, html.mono-l .hero-score b.w { text-shadow: none; }
+html.mono-l .hero { background: linear-gradient(115deg, #e6e6e6 0%, #f4f4f4 46%, transparent 46.2%), linear-gradient(115deg, transparent 53.8%, #f4f4f4 54%, #e6e6e6 100%), #fff; }
+html.mono-l .hero::before { background: none; }
+html.mono-l .hero::after { background: linear-gradient(transparent, #fff); }
+html.mono-l .hero-ha, html.mono-l .hero-rec, html.mono-l .hero-meta { color: #666; }
+html.mono-l .hero-score b { color: #b5b5b5; }
+html.mono-l .hero-score b.w, html.mono-l .hero-nm { color: #000; }
+html.mono-l .hero-score span { background: rgba(0, 0, 0, 0.2); }
+html.mono-l .tabbar a.on { color: #000; }
+html.mono-l .card, html.mono-l .gc { background: var(--card); }
+html.mono-l .ls-card { background: var(--card); }
+html.mono-l .ls td.r { color: #000; }
+html.mono-l table.stat th, html.mono-l table.stat th.nm { background: var(--card-2); }
+html.mono-l table.stat .nm, html.mono-l table.stat tbody tr:nth-child(even) td.nm { background: var(--card); }
+html.mono-l .sheet { background: #fff; }
+html.mono-l .dp-day { background: var(--card); }
+html.mono-l .sw:checked::after { background: #fff; }
+html.mono-l .hero-team.lose .hero-nm { color: #9a9a9a; }
