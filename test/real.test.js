@@ -191,3 +191,14 @@ test('実ページ: 試合のない日に、直近の日の試合を出さない
   assert.deepEqual(parseYahooSchedule(R('yahoo-schedule.html'), '2026-11-05'), []);
   assert.equal(parseYahooSchedule(R('yahoo-schedule.html'), '2026-10-11').length, 2);
 });
+
+test('実ページ: 責任投手のチーム名が【】でくるまれ、本塁打が「、」で続いても名前に混ざらない', () => {
+  const top = R('yahoo-game1-top.html')
+    .replace('<p class="bb-gameLeftTable__team">DeNA</p>', '<p class="bb-gameLeftTable__team">【DeNA】</p>')
+    .replace('<p class="bb-gameLeftTable__team">巨人</p>', '】')
+    .replace('<a class="bb-gameTable__player" href="/npb/player/2000035/top">牧</a>', '、<a class="bb-gameTable__player" href="/npb/player/2000035/top">牧</a>');
+  const g = buildGame({ id: 'y2021039475', source: 'yahoo', url: '', pages: { top: slimYahoo('top', top) } });
+  assert.deepEqual(g.decisions.win, { name: '石田裕', record: '1勝0敗0S', team: 'db' });
+  assert.equal(g.decisions.loss.name, '竹丸');
+  assert.deepEqual(g.homeRuns.map((h) => h.name), ['度会', '牧', 'ダルベック']);
+});
