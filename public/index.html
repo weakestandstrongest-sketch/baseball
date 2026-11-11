@@ -18,6 +18,17 @@
   <link rel="stylesheet" href="styles.css">
   <!-- ひび手帳の中で開いたとき：シートはもうステータスバーの下にあるので、上の切り欠きぶんの空白をあけない -->
   <script>if (window.parent !== window) document.documentElement.classList.add('in-frame');</script>
+<script>
+// ひび手帳のモノクロモードの中で開いたとき：白黒に（?hibitheme=mono-dark / mono-light、あとから変わったときはメッセージで）
+(function () {
+  function apply(t) {
+    var h = document.documentElement; h.classList.toggle('mono-d', t === 'mono-dark'); h.classList.toggle('mono-l', t === 'mono-light');
+    var m = document.querySelector('meta[name="theme-color"]'); if (m) m.content = t === 'mono-light' ? '#ffffff' : t === 'mono-dark' ? '#000000' : '#08090c';
+  }
+  try { var q = new URLSearchParams(location.search).get('hibitheme'); if (q) { apply(q); sessionStorage.setItem('hibitheme', q); } else apply(sessionStorage.getItem('hibitheme') || ''); } catch (e) {}
+  if (window.parent !== window) addEventListener('message', function (e) { if (e.source === parent && e.data && e.data.type === 'hibi:theme') apply(e.data.theme || ''); });
+})();
+</script>
 </head>
 <body>
   <div id="app"></div>
