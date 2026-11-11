@@ -63,11 +63,17 @@ export function gamesView(q) {
       sections.get(key).push(g);
     }
     let body = '';
+    // 表紙：試合中の試合（なければ終わった試合、なければ最初の試合）をいちばん大きく
+    const ordered = GROUPS.flatMap((grp) => sections.get(grp.key) || []);
+    const cover = ordered.find((g) => g.status === 'live') || ordered.find((g) => g.status === 'final') || ordered[0];
+    if (cover) body += coverStory(cover);
+    let sn = 0;
     for (const grp of GROUPS) {
-      const list = sections.get(grp.key);
-      if (!list || !list.length) continue;
-      body += `<section class="sec"><h2 class="sec-title">${grp.key === 'fav' ? icon('star', 14) : ''}${esc(grp.label)}<span class="cnt">${list.length}</span></h2>
-        <div class="cards">${list.map(gameCard).join('')}</div></section>`;
+      const list = (sections.get(grp.key) || []).filter((g) => g !== cover);
+      if (!list.length) continue;
+      sn++;
+      body += `<section class="sec"><h2 class="sec-title"><span class="sec-no">${ROMAN[sn] || sn}.</span>${grp.key === 'fav' ? icon('star', 13) : ''}${esc(grp.label)}<span class="cnt">${list.length}</span></h2>
+        <div class="cards">${list.map((g, i) => gameCard(g, i)).join('')}</div></section>`;
     }
     if (!body && !loading) body = emptyState('この日の試合はありません', fmtDate(date));
     if (!body && loading) body = `<section class="sec"><div class="sk sk-title"></div><div class="cards">${skeleton(4)}</div></section>`;
@@ -82,11 +88,12 @@ export function gamesView(q) {
     const fromX = tapped ? tapped.getBoundingClientRect().left - oldDays.getBoundingClientRect().left : null;
 
     $app.innerHTML = `
-      <header class="lt">
+      <header class="lt mag-head">
+        <div class="mast"><span>Vol. ${Number(date.slice(5, 7))} — No. ${Number(date.slice(8))}</span><span>${EN_WD[dow(date)]} · ${EN_MON[Number(date.slice(5, 7)) - 1]} ${date.slice(0, 4)}</span></div>
         <div class="lt-row">
-          <h1><span class="kicker">${date === today ? 'TODAY' : 'MATCHDAY'} · ${date.slice(5).replace('-', '.')}</span>試合</h1>
+          <h1 class="logo">Base<i>ball.</i></h1>
           <div class="lt-act">
-            ${liveCount ? `<span class="live-cnt"><i class="dot"></i>${liveCount}試合 速報中</span>` : ''}
+            ${liveCount ? `<span class="live-cnt"><i class="dot"></i>${liveCount} Live</span>` : ''}
             <button class="icon-btn" id="pick" aria-label="日付を選ぶ">${icon('calendar', 20)}</button>
           </div>
         </div>
@@ -145,38 +152,44 @@ export function gamesView(q) {
   load();
 }
 
-export function gameCard(g) {
-  const lg = g.league === 'MLB' ? 'mlb' : 'npb';
-  const done = g.status === 'final';
-  const showScore = g.status === 'live' || done;
-  const row = (t, other) => {
-    const win = done && t.score > other.score;
-    const lose = done && t.score < other.score;
-    return `<div class="gc-team ${win ? 'win' : ''} ${lose ? 'lose' : ''}" style="--tc:${esc(t.color || '#555')}">
-      ${badge(t)}
-      <span class="nm">${esc(t.name)}${isFav(g.league, t) ? `<i class="fav-ic">${icon('star', 12)}</i>` : ''}</span>
-      ${t.record ? `<span class="rec">${esc(t.record)}</span>` : ''}
-      ${showScore ? `<b class="sc">${t.score ?? ''}</b>` : ''}
-      ${win ? '<i class="win-mark"></i>' : ''}
-    </div>`;
-  };
-  const tag = g.series || (g.leagueGroup === 'CS' ? 'CS' : g.leagueGroup === 'JS' ? '日本シリーズ' : '');
+const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI'];
+const roman = (n) => (ROMAN[n] || String(n)).toLowerCase();
+const EN_WD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const EN_MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const gameHref = (g) => `#/game/${g.league === 'MLB' ? 'mlb' : 'npb'}/${encodeURIComponent(g.id)}`;
+const sc = (t) => (t.score === null || t.score === undefined ? '–' : t.score);
+
+// 表紙の試合：大きな数字ふたつと縦書きのチーム名、下に短い記事
+function coverStory(g) {
+  const done = g.status === 'final', live = g.status === 'live', pre = !done && !live;
+  const kicker = live ? `<span class="cv-live"><i class="dot"></i>Live — ${esc(g.statusText || '')}</span>` : done ? 'The Final Out.' : g.status === 'postponed' ? 'Postponed.' : 'Tonight.';
+  const lead = [g.series || '', g.venue ? `${g.venue}${pre ? `、${g.startTime || ''}開始` : ''}` : ''].filter(Boolean).join('。');
+  const notes = (g.notes || []).map((n) => esc(n)).join('　');
+  const win = (t, o) => done && t.score > o.score;
   return `
-  <a class="gc ${g.status}" style="--ca:${esc(g.away.color || '#444')};--ch:${esc(g.home.color || '#444')}" href="#/game/${lg}/${encodeURIComponent(g.id)}">
-    <div class="gc-head">
-      ${tag ? `<span class="tag">${esc(tag)}</span>` : `<span class="venue">${icon('stadium', 13)}${esc(g.venue || '')}</span>`}
-      ${statusPill(g)}
+  <a class="cover ${g.status}" href="${gameHref(g)}">
+    <div class="cv-art${pre ? ' pre' : ''}">
+      ${pre ? `<span class="cv-time">${esc(g.startTime || 'vs')}</span>` : `<span class="cv-n a ${win(g.away, g.home) ? 'w' : ''}">${sc(g.away)}</span><span class="cv-n h ${win(g.home, g.away) ? 'w' : ''}">${sc(g.home)}</span>`}
+      <span class="cv-v a">${esc(g.away.name)}</span>
+      <span class="cv-v h">${esc(g.home.name)}</span>
     </div>
-    <div class="gc-body">
-      <div class="gc-teams">${row(g.away, g.home)}${row(g.home, g.away)}</div>
-      ${g.status === 'live' && g.outs !== null && g.outs !== undefined ? `<div class="gc-outs"><span>${'<i class="on"></i>'.repeat(g.outs)}${'<i></i>'.repeat(Math.max(0, 2 - g.outs))}</span><small>アウト</small></div>` : ''}
-      ${g.status === 'pre' ? `<div class="gc-time"><b>${esc(g.startTime || '--:--')}</b><small>開始</small></div>` : ''}
-    </div>
-    ${(g.notes && g.notes.length) || (tag && g.venue) || g.seriesResult ? `<div class="gc-foot">
-      ${tag && g.venue ? `<span>${esc(g.venue)}</span>` : ''}
-      ${g.seriesResult ? `<span>${esc(g.seriesResult)}</span>` : ''}
-      ${(g.notes || []).map((n) => `<span>${noteHtml(n)}</span>`).join('')}
-    </div>` : ''}
+    <p class="cv-cap"><b>${kicker}</b>${esc(lead)}${lead ? '。' : ''}${notes ? `<span class="cv-notes">${notes}</span>` : ''}</p>
+  </a>`;
+}
+
+// 目次のような1行：番号・対戦・点数
+export function gameCard(g, i = 0) {
+  const done = g.status === 'final', live = g.status === 'live';
+  const showScore = live || done;
+  const nm = (t, o) => `<span class="${done && t.score < o.score ? 'lose' : ''}">${esc(t.name)}${isFav(g.league, t) ? `<i class="fav-ic">${icon('star', 10)}</i>` : ''}</span>`;
+  const tag = g.series || '';
+  const sub = [live ? `<em class="t-live"><i class="dot"></i>${esc(g.statusText || 'Live')}</em>` : '', esc(tag || g.venue || ''), g.status === 'pre' && (g.notes || []).length ? (g.notes || []).map(noteHtml).join(' ') : '', g.seriesResult ? esc(g.seriesResult) : '']
+    .filter(Boolean).join('<span class="t-sep">·</span>');
+  return `
+  <a class="gc toc ${g.status}" href="${gameHref(g)}">
+    <span class="t-n">${roman(i + 1)}.</span>
+    <span class="t-m"><span class="t-tm">${nm(g.away, g.home)}<span class="t-dash">—</span>${nm(g.home, g.away)}</span>${sub ? `<span class="t-sub">${sub}</span>` : ''}</span>
+    <span class="t-s">${showScore ? `${sc(g.away)}<span>–</span>${sc(g.home)}` : g.status === 'postponed' ? '<small>中止</small>' : esc(g.startTime || '--:--')}</span>
   </a>`;
 }
 
