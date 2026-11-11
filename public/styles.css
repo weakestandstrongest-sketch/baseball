@@ -588,283 +588,227 @@ body.sheet-open { overflow: hidden; }
 .dp-btn.ghost { background: var(--card-2); color: var(--text); border: 1px solid var(--line); }
 
 /* ===================================================================
-   MAGAZINE — 月刊誌の表紙のような野球速報
-   生成りの紙・墨の黒・朱色ひとつ。数字は Bodoni Moda、日本語は しっぽり明朝、小さな英字は Inter の字間広め
-   箱で囲まず、細い罫線と余白で組む
+   引き算のデザイン：光らせない・枠で囲まない・色はチームの色と試合中の赤だけ
+   数字だけ細長い書体（Barlow Condensed）、ほかは iPhone の文字。余白と細い線で整える
    =================================================================== */
 :root {
-  --bg: #efe9df; --bg-2: #e9e2d6; --card: #efe9df; --card-2: #e6dfd2; --card-3: #d9d1c3;
-  --line: rgba(20, 18, 16, 0.16); --line-2: rgba(20, 18, 16, 0.32);
-  --text: #141210; --text-2: #5f584e; --text-3: #9b9285;
-  --accent: #c8402a; --accent-2: #c8402a; --accent-ink: #fff;
-  --live: #c8402a; --jp: #141210; --ball: #4f7a4a; --strike: #c9962a; --out: #c8402a; --inplay: #3b5c8a;
-  --serif: "Bodoni Moda", "Didot", "Bodoni 72", serif;
-  --min: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
-  --label: "Inter", -apple-system, sans-serif;
-  --num: var(--serif);
-  --r-lg: 0px; --r-md: 0px; --r-sm: 0px;
-  color-scheme: light;
+  --bg: #000; --bg-2: #0a0a0b; --card: #0d0d0f; --card-2: #151517; --card-3: #232326;
+  --line: rgba(255, 255, 255, 0.08); --line-2: rgba(255, 255, 255, 0.12);
+  --text: #f5f5f7; --text-2: #8e8e93; --text-3: #56565b;
+  --accent: #f5f5f7; --accent-2: #f5f5f7; --accent-ink: #000;
+  --live: #ff453a; --jp: #f5f5f7;
+  --cond: "Barlow Condensed", "SF Compact Display", -apple-system, sans-serif;
+  --num: var(--cond);
+  --r-lg: 20px; --r-md: 14px;
 }
-body { background: var(--bg); color: var(--text); font-family: var(--min); font-feature-settings: "palt"; letter-spacing: 0.02em; }
-small { color: var(--text-2); }
-.jp { color: var(--text) !important; text-decoration: underline 1px var(--accent); text-underline-offset: 4px; }
-.dot { width: 6px; height: 6px; }
+body { background: #000; font-feature-settings: "palt"; letter-spacing: 0; }
+.jp { color: var(--text) !important; text-decoration: underline 1px rgba(255, 255, 255, 0.35); text-underline-offset: 3px; }
 
-/* 見出し：雑誌の題字と、上の細い行 */
-.lt { padding: calc(var(--safe-top) + 16px) 22px 4px; }
-.mast { display: flex; justify-content: space-between; font-family: var(--label); font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase; padding-bottom: 2px; }
-.lt-row { align-items: flex-end; }
-.lt h1 { font-family: var(--min); font-size: 34px; font-weight: 700; letter-spacing: 0.04em; line-height: 1.1; }
-.lt h1.logo { font-family: var(--serif); font-weight: 700; font-size: 66px; letter-spacing: -0.035em; line-height: 0.95; margin-left: -3px; }
-.lt h1.logo i { font-weight: 400; }
-.kicker { display: block; font-family: var(--label); font-size: 10px; font-weight: 500; letter-spacing: 0.26em; color: var(--text-2); margin-bottom: 10px; }
-.lt-sub { font-size: 12.5px; color: var(--text-2); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--text); }
-.today-tag { background: none; color: var(--accent); padding: 0; font-weight: 500; font-size: 12.5px; }
-.today-link { color: var(--accent); }
-.live-cnt { background: none; padding: 0; color: var(--accent); font-family: var(--label); font-size: 10px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; }
-.icon-btn, .icon-btn.glass { background: transparent; border: 1px solid var(--text); color: var(--text); width: 36px; height: 36px; backdrop-filter: none; -webkit-backdrop-filter: none; }
-.gnav .icon-btn.glass { background: rgba(239, 233, 223, 0.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+/* 見出し */
+.lt { padding: calc(var(--safe-top) + 20px) 20px 6px; }
+.lt h1 { font-size: 34px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.08; }
+.kicker { display: block; font-family: var(--cond); font-size: 12px; font-weight: 600; letter-spacing: 0.24em; color: var(--text-3); margin-bottom: 6px; }
+.lt-sub { font-size: 13px; color: var(--text-2); margin-top: 4px; }
+.today-tag { background: none; color: var(--text-2); padding: 0; font-size: 13px; font-weight: 500; }
+.today-tag::before { content: "・"; }
+.today-link { color: var(--text); font-weight: 500; }
+.live-cnt { background: none; padding: 0; color: var(--live); font-size: 12px; font-weight: 600; }
+.icon-btn, .icon-btn.glass { background: rgba(255, 255, 255, 0.08); border: 0; box-shadow: none; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+.icon-btn.glass { background: rgba(0, 0, 0, 0.4); }
 
-/* 日付の帯：細い Bodoni の数字、選んだ日は朱色の斜体 */
-.sticky-bar { background: rgba(239, 233, 223, 0.94); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); padding-bottom: 8px; border-bottom: 1px solid var(--line); }
-.days { gap: 0; padding: 4px 12px 6px; }
-.day { width: 46px; height: 58px; background: none; border: 0; border-radius: 0; gap: 0; }
-.day .dw, .day.sat .dw, .day.sun .dw { font-family: var(--min); font-size: 10.5px; color: var(--text-3); }
-.day .dd { font-family: var(--serif); font-size: 25px; font-weight: 400; color: var(--text-3); line-height: 1.05; }
-.day.today .dd { color: var(--text); }
+/* 日付の帯：数字だけ。選んだ日は白、ほかは灰色 */
+.sticky-bar { background: rgba(0, 0, 0, 0.82); backdrop-filter: blur(24px) saturate(1.6); -webkit-backdrop-filter: blur(24px) saturate(1.6); padding-bottom: 10px; border-bottom: 0.5px solid var(--line); }
+.days { gap: 0; padding: 4px 12px 8px; }
+.day { width: 46px; height: 56px; background: none; border: 0; border-radius: 0; gap: 2px; }
+.day .dw { font-size: 10.5px; font-weight: 500; color: var(--text-3); }
+.day.sat .dw, .day.sun .dw { color: var(--text-3); }
+.day .dd { font-size: 23px; font-weight: 500; color: var(--text-3); line-height: 1; }
+.day.today .dd { color: var(--text-2); }
 .day.today::after { display: none; }
 .day.on { background: none; box-shadow: none; }
-.day.on .dd { color: var(--accent); font-style: italic; font-weight: 500; }
-.day.on .dw { color: var(--accent); }
-.day.on::before { content: ""; position: absolute; bottom: 3px; left: 17px; right: 17px; height: 1px; background: var(--accent); }
+.day.on .dd { color: var(--text); font-weight: 700; }
+.day.on .dw { color: var(--text); }
+.day.on::before { content: ""; position: absolute; bottom: 2px; left: 15px; right: 15px; height: 2px; border-radius: 1px; background: var(--text); }
 
-/* 切り替え：小さな英字の目次のように。選んだものに下線 */
-.seg { background: none; border: 0; border-radius: 0; padding: 0; gap: 20px; }
-.seg > a, .seg > button { flex: none; border-radius: 0; padding: 7px 0; font-family: var(--min); font-size: 13.5px; font-weight: 500; color: var(--text-3); }
-.seg > .on { background: none; color: var(--text); box-shadow: inset 0 -1px 0 var(--text); }
-.tabs .seg { justify-content: space-between; gap: 0; }
-.tabs .seg > a { flex: 1; font-size: 15px; }
-.tabs { border-bottom: 1px solid var(--line); }
-.tabs.stuck { background: rgba(239, 233, 223, 0.94); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: none; }
+/* 切り替え：iPhone と同じ控えめなセグメント */
+.seg { background: #1c1c1e; border: 0; border-radius: 10px; padding: 2px; gap: 0; }
+.seg > a, .seg > button { border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--text-2); padding: 6px 10px; }
+.seg > .on { background: #3a3a3c; color: var(--text); box-shadow: none; font-weight: 600; }
+.tabs .seg > a { font-size: 14px; padding: 7px 0; }
 .team-seg > button.on { box-shadow: inset 0 -2px 0 var(--c); }
 
-/* 表紙の試合 */
-.cover { display: block; position: relative; margin: 14px 0 6px; padding-bottom: 18px; border-bottom: 1px solid var(--text); color: var(--text); }
-.cv-art { position: relative; height: 330px; }
-.cv-n { position: absolute; font-family: var(--serif); font-weight: 400; font-size: 250px; line-height: 0.78; letter-spacing: -0.06em; }
-.cv-n.a { left: -6px; top: 6px; }
-.cv-n.h { right: -2px; top: 112px; font-style: italic; color: var(--accent); }
-.cv-v { position: absolute; writing-mode: vertical-rl; font-family: var(--min); font-weight: 700; font-size: 25px; letter-spacing: 0.18em; line-height: 1; max-height: 210px; overflow: hidden; }
-.cv-v.a { left: 46%; top: 8px; }
-.cv-v.h { left: 58%; top: 120px; color: var(--accent); }
-.cv-art.pre .cv-v.a { left: 6px; top: 4px; }
-.cv-art.pre .cv-v.h { left: 44px; top: 4px; color: var(--text); }
-.cv-time { position: absolute; right: -4px; bottom: 6px; font-family: var(--serif); font-style: italic; font-size: 118px; line-height: 0.8; letter-spacing: -0.04em; color: var(--accent); }
-.cv-cap { margin: 0; max-width: 78%; font-size: 12.5px; line-height: 1.85; color: var(--text); }
-.cv-cap b { display: block; font-family: var(--serif); font-style: italic; font-weight: 500; font-size: 17px; letter-spacing: 0; margin-bottom: 2px; }
-.cv-live { display: inline-flex; align-items: center; gap: 7px; color: var(--accent); }
-.cv-notes { display: block; color: var(--text-2); font-size: 11.5px; }
-.cover:active { opacity: 0.7; }
+/* セクション見出し */
+.sec-title { font-size: 13px; font-weight: 600; letter-spacing: 0.02em; color: var(--text-2); margin: 28px 4px 10px; }
+.sec-title .cnt { background: none; padding: 0; color: var(--text-3); font-family: var(--cond); font-size: 13px; font-weight: 500; }
+.sec-title .ic { color: var(--text-2); }
+.cards { gap: 8px; }
 
-/* 目次：番号・対戦・点数を細い罫線で */
-.list { padding: 0 22px 24px; }
-.sec { margin-top: 0; }
-.sec-title { display: flex; align-items: baseline; gap: 6px; margin: 30px 0 2px; font-family: var(--label); font-size: 10px; font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase; color: var(--text); }
-.sec-title .sec-no { font-family: var(--serif); font-style: italic; font-size: 15px; letter-spacing: 0; text-transform: none; font-weight: 500; color: var(--accent); }
-.sec-title .cnt { margin-left: auto; background: none; padding: 0; font-family: var(--serif); font-style: italic; font-size: 13px; font-weight: 400; letter-spacing: 0; color: var(--text-3); }
-.sec-title .ic { color: var(--accent); }
-.cards { gap: 0; }
-.gc.toc { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; align-items: baseline; gap: 4px; padding: 13px 0 12px; background: none; border: 0; border-top: 1px solid var(--line); border-radius: 0; box-shadow: none; overflow: visible; color: var(--text); }
-.gc.toc:first-child { border-top: 1px solid var(--text); }
-.gc.toc:active { background: var(--card-2); transform: none; }
-.gc.toc::before, .gc.toc::after { display: none; }
-.t-n { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--text-2); }
-.t-m { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-.t-tm { font-size: 16px; font-weight: 500; letter-spacing: 0.06em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.t-tm .lose { color: var(--text-3); }
-.t-dash { margin: 0 6px; color: var(--text-3); }
-.t-sub { display: flex; flex-wrap: wrap; align-items: center; font-size: 11px; color: var(--text-2); letter-spacing: 0.04em; }
-.t-sep { margin: 0 6px; color: var(--text-3); }
-.t-live { display: inline-flex; align-items: center; gap: 5px; font-style: normal; color: var(--accent); font-weight: 500; }
-.t-s { font-family: var(--serif); font-size: 24px; font-weight: 400; letter-spacing: -0.01em; white-space: nowrap; padding-left: 10px; }
-.t-s span { margin: 0 3px; color: var(--text-3); }
-.gc.toc.live .t-s { color: var(--accent); font-style: italic; }
-.gc.toc.pre .t-s { font-style: italic; color: var(--text-2); }
-.fav-ic { color: var(--accent); margin-left: 3px; }
-.nt, .nt-w, .nt-l, .nt-s, .nt-p { background: none; padding: 0; margin-right: 4px; color: var(--text-3); font-weight: 500; font-size: 10.5px; }
+/* チームのしるし：つや・影をやめて、平らな丸 */
+.tb { border-radius: 50%; background: var(--c); box-shadow: none; font-weight: 700; }
+.tb.xl { border-radius: 50%; }
+.tb.xs { border-radius: 50%; }
 
-/* 状態の文字 */
-.pill, .pill.final, .pill.pre, .pill.off { background: none; border: 0; box-shadow: none; padding: 0; font-family: var(--label); font-size: 10px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-2); }
-.pill.live { background: none; color: var(--accent); box-shadow: none; }
-.pill.big { font-size: 10.5px; }
+/* 試合カード：平らな面に、余白と数字だけ */
+.gc { background: var(--card); border: 0; border-radius: 20px; padding: 14px 18px 15px; box-shadow: none; }
+.gc:active { background: var(--card-2); transform: none; }
+.gc.live, .gc.live::before { box-shadow: none; }
+.gc.live::before { display: block; left: 0; top: 0; bottom: auto; right: 0; width: auto; height: 2px; border-radius: 0; background: var(--live); opacity: 0.9; }
+.gc-head { margin-bottom: 12px; min-height: 18px; }
+.gc-head .venue { font-size: 12px; color: var(--text-3); }
+.gc-head .venue .ic { display: none; }
+.tag { background: none; padding: 0; border-radius: 0; color: var(--text-2); font-size: 12px; font-weight: 500; }
+.gc-teams { gap: 10px; }
+.gc-team { gap: 12px; }
+.gc-team .tb { --s: 24px; }
+.gc-team .nm { font-size: 16px; font-weight: 600; }
+.gc-team .rec { font-size: 13px; font-weight: 500; color: var(--text-3); }
+.gc-team .sc { font-size: 34px; font-weight: 600; line-height: 0.9; min-width: 30px; }
+.gc-team.lose .nm, .gc-team.lose .sc { color: var(--text-3); }
+.gc-team .win-mark { display: none; }
+.fav-ic { color: var(--text-2); }
+.gc-outs, .gc-time { border-left: 0.5px solid var(--line-2); padding-left: 16px; }
+.gc-outs i { width: 8px; height: 8px; border-width: 1px; border-color: var(--text-3); }
+.gc-outs i.on { background: var(--text); border-color: var(--text); }
+.gc-outs small, .gc-time small { font-size: 10.5px; color: var(--text-3); }
+.gc-time b { font-size: 28px; font-weight: 600; line-height: 1; }
+.gc-foot { border-top: 0.5px solid var(--line); margin-top: 12px; padding-top: 10px; font-size: 12px; color: var(--text-2); gap: 4px 14px; }
+.nt, .nt-w, .nt-l, .nt-s, .nt-p { background: none; padding: 0; margin-right: 5px; color: var(--text-3); font-weight: 600; font-size: 11px; }
 
-/* 下のバー：雑誌の柱（ページの下の小さな文字）のように */
-.tabbar { left: 0; right: 0; bottom: 0; height: calc(54px + var(--safe-bottom)); padding: 0 12px var(--safe-bottom); border-radius: 0; background: rgba(239, 233, 223, 0.95); border: 0; border-top: 1px solid var(--text); box-shadow: none; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
-.tabbar a { flex-direction: row; gap: 0; font-family: var(--min); font-size: 12px; font-weight: 500; letter-spacing: 0.14em; color: var(--text-3); }
-.tabbar a .ic { display: none; }
+/* 状態：枠も色の面もなし。試合中だけ赤い字 */
+.pill, .pill.final, .pill.pre, .pill.off { background: none; border: 0; box-shadow: none; padding: 0; font-family: -apple-system, "Hiragino Sans", sans-serif; font-size: 12px; font-weight: 500; color: var(--text-2); letter-spacing: 0; }
+.pill.live { background: none; color: var(--live); font-weight: 600; box-shadow: none; }
+.pill.pre { color: var(--text); font-family: var(--cond); font-size: 15px; font-weight: 600; }
+.pill.big { font-size: 13px; }
+.pill .dot { width: 6px; height: 6px; }
+
+/* 下のタブバー */
+.tabbar { left: 16px; right: 16px; height: 62px; border-radius: 31px; background: rgba(28, 28, 30, 0.72); border: 0.5px solid rgba(255, 255, 255, 0.1); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5); backdrop-filter: blur(30px) saturate(1.8); -webkit-backdrop-filter: blur(30px) saturate(1.8); }
+.tabbar a { color: #636366; font-weight: 500; }
 .tabbar a.on { color: var(--text); }
-.tabbar a.on span { box-shadow: inset 0 -1px 0 var(--accent); padding-bottom: 2px; }
-body { padding-bottom: calc(70px + var(--safe-bottom)); }
+.tabbar a.on .ic { filter: none; }
 
-/* 試合の画面の上：表紙と同じく大きな数字と縦書きのチーム名 */
-.hero { padding: calc(var(--safe-top) + 60px) 22px 22px; background: var(--bg); border-bottom: 1px solid var(--text); overflow: hidden; }
-.hero::before { display: none; }
-.hero::after { display: none; }
-.hero-series { font-family: var(--label); font-size: 10px; font-weight: 600; letter-spacing: 0.22em; color: var(--text); text-align: left; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--text); }
-.hero-main { grid-template-columns: auto 1fr auto; align-items: start; min-height: 250px; position: relative; }
-.hero-team { gap: 4px; align-items: center; }
-.hero-team .tb, .hero-ha, .hero-rec { display: none; }
-.hero-nm { writing-mode: vertical-rl; font-family: var(--min); font-size: 24px; font-weight: 700; letter-spacing: 0.18em; max-height: 220px; white-space: nowrap; }
-.hero-team.home .hero-nm { color: var(--accent); }
-.hero-team.home { margin-top: 30px; }
-.hero-team.lose .hero-nm { opacity: 0.45; }
-.hero-mid { gap: 10px; align-self: stretch; justify-content: space-between; }
-.hero-score { flex-direction: column; gap: 0; width: 100%; align-items: stretch; }
-.hero-score b { font-family: var(--serif); font-weight: 400; font-size: 150px; line-height: 0.82; letter-spacing: -0.06em; color: var(--text); text-shadow: none; min-width: 0; }
-.hero-score b:first-child { text-align: left; padding-left: 10px; }
-.hero-score b:last-child { text-align: right; font-style: italic; color: var(--accent); margin-top: -20px; padding-right: 10px; }
-.hero-score b.w { color: inherit; text-shadow: none; }
-.hero-score b:not(.w) { opacity: 1; }
-.hero-score span { display: none; }
-.hero-vs { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 76px; line-height: 1; color: var(--accent); margin-top: 60px; }
-.hero-meta { justify-content: flex-start; margin-top: 14px; font-size: 12px; color: var(--text-2); }
+/* 試合の画面の上：黒の上に、両チームの色がうっすら */
+.hero { padding: calc(var(--safe-top) + 64px) 20px 28px;
+  background: radial-gradient(60% 80% at 0% 0%, color-mix(in srgb, var(--ca) 28%, transparent), transparent 70%), radial-gradient(60% 80% at 100% 0%, color-mix(in srgb, var(--ch) 28%, transparent), transparent 70%), #000; }
+.hero::after { height: 80px; background: linear-gradient(transparent, #000); }
+.hero-series { color: var(--text-2); font-size: 12px; font-weight: 500; letter-spacing: 0.02em; margin-bottom: 18px; }
+.hero-ha { font-family: var(--cond); font-size: 11px; font-weight: 600; letter-spacing: 0.26em; color: var(--text-3); }
+.hero-team { gap: 8px; }
+.hero-team .tb { --s: 52px; font-size: 22px; }
+.hero-team .tb.tb-2 { font-size: 18px; }
+.hero-nm { font-size: 15px; font-weight: 700; }
+.hero-rec { font-size: 13px; color: var(--text-3); }
+.hero-team.lose .hero-nm { color: var(--text-2); }
+.hero-team.lose .tb { opacity: 0.55; }
+.hero-score { gap: 18px; }
+.hero-score b { font-size: 84px; font-weight: 600; line-height: 0.82; color: var(--text-3); min-width: 0; text-shadow: none; }
+.hero-score b.w { color: var(--text); text-shadow: none; }
+.hero-score span { width: 1px; height: 40px; background: var(--line-2); }
+.hero-vs { font-size: 50px; font-weight: 600; line-height: 0.9; }
+.hero-mid { gap: 14px; }
+.hero-meta { margin-top: 22px; font-size: 12px; color: var(--text-2); }
 .hero-meta .ic { display: none; }
+.tabs.stuck { background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(24px) saturate(1.6); -webkit-backdrop-filter: blur(24px) saturate(1.6); box-shadow: 0 0.5px 0 var(--line); }
 
-/* 面と表：紙の上に罫線 */
-.card { background: transparent; border: 0; border-top: 1px solid var(--text); border-bottom: 1px solid var(--line); border-radius: 0; }
-.card + .card { margin-top: 18px; }
-.list-card .li { border-top: 1px solid var(--line); padding: 12px 2px; }
-.ls-card { margin: 10px 22px 0; background: transparent; }
-.ls thead th { font-family: var(--label); font-size: 10px; font-weight: 500; letter-spacing: 0.1em; color: var(--text-3); }
-.ls td { font-family: var(--serif); font-size: 20px; font-weight: 400; color: var(--text-2); }
-.ls td.pts { color: var(--text); }
-.ls td.r { font-size: 23px; font-weight: 500; color: var(--text); }
-.ls td.cur { background: none; color: var(--accent); font-style: italic; box-shadow: none; border-radius: 0; }
-.ls .r { border-left: 1px solid var(--line-2); }
-.ls tbody tr + tr td, .ls tbody tr + tr th { border-top: 1px solid var(--line); }
-.ls th.tm { font-family: var(--min); font-size: 14px; font-weight: 700; }
-.tm-bar { width: 2px; height: 14px; }
-.gbody { padding: 0 22px 12px; }
-.sec-title + .card { margin-top: 6px; }
-table.stat { font-family: var(--serif); font-size: 15.5px; }
-table.stat th, table.stat th.nm { background: var(--bg); font-family: var(--label); font-size: 9.5px; font-weight: 600; letter-spacing: 0.08em; color: var(--text-2); border-bottom: 1px solid var(--text); }
-table.stat td { border-top: 1px solid var(--line); }
-table.stat .nm, table.stat tbody tr:nth-child(even) td, table.stat tbody tr:nth-child(even) td.nm { background: var(--bg); }
-table.stat .nm { font-family: var(--min); font-weight: 700; box-shadow: 1px 0 0 var(--line); }
-table.stat .pos, table.stat td.inn { font-family: var(--min); }
+/* 面・表：枠をなくし、細い線だけ */
+.card { background: var(--card); border: 0; border-radius: 20px; }
+.list-card .li { border-top: 0.5px solid var(--line); }
+.ls-card { background: transparent; border-radius: 0; border-top: 0.5px solid var(--line); border-bottom: 0.5px solid var(--line); margin: 6px 16px 0; }
+.ls thead th { font-size: 12px; font-weight: 500; color: var(--text-3); }
+.ls td { font-size: 19px; font-weight: 500; color: var(--text-2); }
+.ls td.pts { color: var(--text); font-weight: 600; }
+.ls td.r { font-size: 22px; font-weight: 600; color: var(--text); }
+.ls td.cur { background: none; color: var(--text); box-shadow: inset 0 -2px 0 var(--live); border-radius: 0; }
+.ls .r { border-left: 0.5px solid var(--line-2); }
+.ls tbody tr + tr td, .ls tbody tr + tr th { border-top: 0.5px solid var(--line); }
+.ls th.tm { font-size: 14px; font-weight: 600; }
+.tm-bar { width: 3px; height: 14px; }
+table.stat { font-size: 15px; }
+table.stat th, table.stat th.nm { background: var(--card); font-size: 11.5px; font-weight: 500; color: var(--text-3); }
+table.stat td { border-top: 0.5px solid var(--line); font-weight: 500; }
+table.stat tbody tr:nth-child(even) td, table.stat tbody tr:nth-child(even) td.nm { background: var(--card); }
+table.stat .nm { background: var(--card); font-weight: 600; }
 table.stat td.hit { color: var(--text); font-weight: 700; }
-table.stat td.hr { color: var(--accent); background: rgba(200, 64, 42, 0.08) !important; font-style: italic; }
+table.stat td.hr { color: var(--text); background: rgba(255, 255, 255, 0.1) !important; }
 table.stat tr.total td { background: var(--card-2) !important; }
-table.stat td.dec-w { color: var(--accent); }
-table.stat td.dec-l, table.stat td.dec-s { color: var(--text); }
-.stand td.rank { font-family: var(--serif); font-style: italic; font-size: 19px; color: var(--text-3); }
-.stand td.rank.top { color: var(--accent); }
-.stand tr.fav td { background: rgba(200, 64, 42, 0.06) !important; }
-.cl { color: var(--accent); }
-.slist th.sorted { color: var(--accent); box-shadow: inset 0 -1px 0 var(--accent); }
-.slist td.sorted { color: var(--accent); }
-.matrix td.mx.up b { color: var(--accent); }
+table.stat td.dec-w, table.stat td.dec-l, table.stat td.dec-s { color: var(--text); }
+.stand td.rank { font-size: 18px; font-weight: 600; color: var(--text-3); }
+.stand td.rank.top { color: var(--text); }
+.stand tr.fav td { background: rgba(255, 255, 255, 0.05) !important; }
+.cl { color: var(--text-2); }
+.slist th.sorted { color: var(--text); box-shadow: inset 0 -2px 0 var(--text); }
+.slist td.sorted { color: var(--text); }
+.matrix td.mx.up b { color: var(--text); }
 .matrix td.mx.down b { color: var(--text-3); }
-.matrix td.self { background: var(--card-2) !important; }
-.board { border-bottom: 1px solid var(--text); }
-.board-t { font-family: var(--label); font-size: 10px; font-weight: 600; letter-spacing: 0.24em; color: var(--text); padding: 12px 2px 4px; }
-.board-top { padding: 6px 2px 14px; }
-.medal { background: none; box-shadow: none; color: var(--accent); font-family: var(--serif); font-style: italic; font-size: 26px; font-weight: 400; width: 26px; }
-.bt-main b { font-family: var(--min); font-size: 20px; font-weight: 700; }
-.bt-val { font-family: var(--serif); font-size: 52px; font-weight: 400; color: var(--text); line-height: 0.9; letter-spacing: -0.03em; }
-.board-row { border-top: 1px solid var(--line); padding: 9px 2px; }
-.br-rank { font-family: var(--serif); font-style: italic; color: var(--text-3); }
-.br-val { font-family: var(--serif); font-size: 18px; font-weight: 400; }
-.board-row.fav { background: rgba(200, 64, 42, 0.05); }
-.board-more { color: var(--accent); border-top: 1px solid var(--line); font-family: var(--serif); font-style: italic; font-size: 14px; justify-content: flex-end; }
-.hr-n { color: var(--accent); font-family: var(--serif); font-style: italic; }
-.tl-inn { background: none; color: var(--text-2); padding: 0; font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 14px; }
-.tl-score, .inn-runs { background: none; color: var(--accent); padding: 0; font-family: var(--serif); font-style: italic; font-size: 16px; font-weight: 400; }
-.dec .dec-k, .dec-w, .dec-l, .dec-s { background: none; color: var(--accent); border: 1px solid currentColor; border-radius: 50%; font-family: var(--min); }
-.dec-l, .dec-s { color: var(--text); }
-.inn-h b { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 20px; }
+.board-t { font-size: 13px; font-weight: 600; letter-spacing: 0; color: var(--text-2); }
+.medal { background: none; box-shadow: none; color: var(--text); font-size: 20px; font-weight: 600; width: 24px; }
+.bt-main b { font-size: 18px; font-weight: 700; }
+.bt-val { font-size: 40px; font-weight: 600; color: var(--text); line-height: 1; }
+.br-rank { font-size: 16px; font-weight: 500; color: var(--text-3); }
+.br-val { font-size: 18px; font-weight: 600; }
+.board-row { border-top: 0.5px solid var(--line); }
+.board-row.fav { background: rgba(255, 255, 255, 0.04); }
+.board-more { color: var(--text-2); border-top: 0.5px solid var(--line); font-weight: 500; }
+.hr-n { color: var(--text-2); }
+.tl-inn { background: none; color: var(--text-2); padding: 0; font-weight: 600; }
+.tl-score, .inn-runs { background: none; color: var(--text); padding: 0; font-family: var(--cond); font-size: 15px; font-weight: 600; }
+.dec .dec-k, .dec-w, .dec-l, .dec-s { background: var(--card-3); color: var(--text); border-radius: 50%; }
 
 /* 速報 */
-.abnav button { background: none; border: 1px solid var(--line-2); border-radius: 0; font-family: var(--min); }
-.abnav button.now { color: var(--accent); border-color: var(--accent); }
-.live-now { color: var(--accent); font-family: var(--label); font-size: 10px; letter-spacing: 0.24em; }
-.sit-inn { color: var(--accent); font-family: var(--min); }
-.bso b { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--text-2); }
-.bso i { background: transparent; box-shadow: inset 0 0 0 1px var(--line-2); }
+.abnav button { background: var(--card-2); border: 0; font-weight: 500; }
+.abnav button.now { background: none; color: var(--live); }
+.live-now { color: var(--live); letter-spacing: 0.16em; }
+.sit-inn { color: var(--text); font-weight: 700; }
+.bso b { font-size: 15px; font-weight: 600; color: var(--text-3); }
+.bso i { width: 12px; height: 12px; background: var(--card-3); box-shadow: none; }
 .bso i.g, .bso i.y, .bso i.r { box-shadow: none; }
-.field-card { background: #e4dccd; }
-.field .chalk { stroke: rgba(20, 18, 16, 0.45); }
-.field .base rect { fill: var(--bg); stroke: var(--text); }
-.field .base.on rect { fill: var(--accent); stroke: var(--accent); }
-.field .glow { fill: rgba(200, 64, 42, 0.18); }
-.field .runner rect { fill: var(--text); stroke: var(--text); }
-.field .df { fill: var(--text); stroke: var(--bg); }
-.mu-l { font-family: var(--label); font-size: 9.5px; letter-spacing: 0.22em; color: var(--text-2); }
-.mu-p b { font-family: var(--min); }
+.field-card { background: #0b120c; }
+.field .chalk { stroke: rgba(255, 255, 255, 0.3); }
+.field .base.on rect { fill: #fff; stroke: #fff; }
+.field .glow { fill: rgba(255, 255, 255, 0.18); }
+.field .runner rect { fill: #000; stroke: rgba(255, 255, 255, 0.5); }
+.mu-l { letter-spacing: 0.06em; }
 .mu-p b em { background: none; padding: 0; color: var(--text-3); }
-.mu-p + .mu-p { border-left: 1px solid var(--line); }
-.result-card.scoring { background: none; border-color: var(--accent); }
-.result-card.scoring b { color: var(--accent); }
-.ab.scoring { background: none; box-shadow: inset 2px 0 0 var(--accent); }
-.ab.scoring .ab-res, .ev.scoring { color: var(--accent); }
-.ab.now { box-shadow: inset 2px 0 0 var(--text); }
-.ab-o { background: none; color: var(--text-3); font-family: var(--serif); font-style: italic; }
-.ab-res { color: var(--text); }
-.ev { color: var(--text-2); }
-.ev.chg { color: var(--inplay); }
-.pt-speed { font-size: 18px; font-weight: 400; }
-.pn { color: #fff; }
-.zone .sz { fill: rgba(20, 18, 16, 0.03); stroke: rgba(20, 18, 16, 0.7); }
-.zone .grid line { stroke: rgba(20, 18, 16, 0.18); }
-.zone .plate { fill: rgba(20, 18, 16, 0.4); }
-.zone text { fill: #fff; }
-.lu-head { background: none; border-bottom: 1px solid var(--text); font-family: var(--min); }
-.lu-o { font-family: var(--serif); font-style: italic; }
-.text-card { color: var(--text); font-size: 14.5px; line-height: 2; }
-.err { background: none; border: 1px solid var(--accent); color: var(--accent); border-radius: 0; }
-.sk { background: linear-gradient(90deg, var(--card-2) 0%, var(--card-3) 50%, var(--card-2) 100%); background-size: 200% 100%; border-radius: 0; }
+.result-card.scoring { background: var(--card); border: 0; box-shadow: inset 2px 0 0 var(--text); }
+.result-card.scoring b { color: var(--text); }
+.ab.scoring { background: none; box-shadow: inset 2px 0 0 var(--text); }
+.ab.scoring .ab-res, .ev.scoring { color: var(--text); font-weight: 600; }
+.ab-o { background: none; color: var(--text-3); }
+.pt-speed { font-size: 17px; font-weight: 600; }
 
 /* カレンダー */
-.team-pick { padding: 4px 22px 10px; }
-.tp { border-radius: 0; }
-.tp.on { background: none; border: 0; box-shadow: inset 0 -1px 0 var(--accent); }
-.tp:not(.on) .tb { opacity: 0.45; }
-.tb { border-radius: 50%; background: var(--c); box-shadow: none; font-family: -apple-system, "Hiragino Sans", sans-serif; }
+.tp { border-radius: 12px; }
+.tp.on { background: var(--card-2); border-color: transparent; }
+.tp:not(.on) .tb { opacity: 0.5; }
 .cal-card { background: transparent; }
-.cal-title b { font-family: var(--serif); font-style: italic; font-size: 26px; font-weight: 400; color: var(--text); }
-.cal-rec { font-family: var(--serif); font-size: 17px; font-weight: 400; }
-.cal-rec .w { color: var(--accent); }
-.cal-rec .l { color: var(--text); }
-.ch { font-family: var(--min); color: var(--text-2); }
+.cal-title b { font-size: 22px; font-weight: 600; color: var(--text); }
+.cal-rec { font-size: 15px; font-weight: 600; }
+.cal-rec .w, .cal-rec .l { color: var(--text); }
+.cal-grid { border-top: 0.5px solid var(--line); }
+.ch, .cc { border-color: var(--line) !important; border-width: 0 0.5px 0.5px 0 !important; }
+.ch { border-right: 0 !important; }
 .ch.sat, .ch.sun, .cc.sat .cd, .cc.sun .cd { color: var(--text-2); }
-.cc { border-color: var(--line); }
-.cc.empty { background: none; }
-.cc.today { background: rgba(200, 64, 42, 0.06); }
-.cc.today .cd { background: none; color: var(--accent) !important; font-style: italic; }
-.cd { font-family: var(--serif); font-size: 15px; font-weight: 400; }
-.cr.win { color: var(--accent); }
+.cc.today { background: rgba(255, 255, 255, 0.05); }
+.cc.today .cd { background: var(--text); color: #000 !important; }
+.cd { font-size: 14px; font-weight: 600; }
+.cr { font-size: 18px; }
+.cr.win { color: var(--text); }
 .cr.loss { color: var(--text-3); }
+.cr.live { color: var(--live); }
 
 /* シート・設定 */
-.sheet { background: var(--bg); border: 0; border-top: 1px solid var(--text); border-radius: 0; box-shadow: 0 -10px 40px rgba(20, 18, 16, 0.15); }
-.sheet-grip { background: var(--line-2); }
-.dp-head b { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 24px; }
-.dp-wd { font-family: var(--min); }
+.sheet { background: #1c1c1e; border: 0; }
+.sheet-grip { background: #48484a; }
+.dp-day { background: none; font-size: 18px; font-weight: 500; }
+.dp-day.on { background: var(--text); color: #000 !important; box-shadow: none; border-radius: 50%; }
+.dp-day.today { box-shadow: none; color: var(--live); }
 .dp-wd.sat, .dp-day.sat, .dp-wd.sun, .dp-day.sun { color: var(--text-2); }
-.dp-day { background: none; font-family: var(--serif); font-size: 19px; font-weight: 400; border-radius: 0; }
-.dp-day.on { background: none; color: var(--accent) !important; font-style: italic; box-shadow: inset 0 -1px 0 var(--accent); }
-.dp-day.today { box-shadow: none; text-decoration: underline 1px; text-underline-offset: 5px; }
-.dp-btn { background: var(--text); color: var(--bg); border-radius: 0; font-family: var(--min); font-weight: 500; letter-spacing: 0.1em; }
-.dp-btn.ghost { background: none; color: var(--text); border: 1px solid var(--text); }
-.fl { font-family: var(--label); font-size: 9.5px; letter-spacing: 0.22em; color: var(--text-2); }
-.fchip { background: none; border: 1px solid var(--line-2); border-radius: 0; font-family: var(--min); color: var(--text-2); }
-.fchip.on { background: none; border-color: var(--text); color: var(--text); box-shadow: none; }
-.sw { background: var(--card-3); }
-.sw:checked { background: var(--accent); }
-.empty { font-family: var(--min); }
-.empty-ic { color: var(--text-3); }
-.foot { font-family: var(--label); font-size: 10px; letter-spacing: 0.1em; }
-.hint a { color: var(--accent); }
+.dp-btn { background: var(--text); color: #000; border-radius: 14px; font-weight: 600; }
+.dp-btn.ghost { background: #2c2c2e; color: var(--text); border: 0; }
+.fchip { background: var(--card-2); border: 0; font-weight: 500; }
+.fchip.on { background: color-mix(in srgb, var(--c) 30%, #1c1c1e); }
+.sw:checked { background: #30d158; }
+.empty-ic { opacity: 0.6; }
 
 /* ひび手帳の中で開いたとき（index.html で in-frame を付ける）：上の切り欠きぶんの空白をあけない
    （iPhone のアプリ版のひび手帳では、中の画面にもその幅が渡されて、上が大きくあいていた） */
@@ -908,10 +852,20 @@ html.mono-l .zone .sz { fill: rgba(0, 0, 0, 0.03); stroke: rgba(0, 0, 0, 0.7); }
 html.mono-l .zone .grid line { stroke: rgba(0, 0, 0, 0.18); }
 html.mono-l .zone .plate { fill: rgba(0, 0, 0, 0.45); }
 html.mono-l .sheet-bg { background: rgba(0, 0, 0, 0.3); }
-.live-cnt { white-space: nowrap; }
-.tb, .tb.xs, .tb.sm, .tb.md, .tb.xl { border-radius: 50%; }
 
-/* 雑誌の白黒（ひび手帳のモノクロモード）：紙の色を黒／白に */
-html.mono-d .sticky-bar, html.mono-d .tabbar, html.mono-d .tabs.stuck, html.mono-d .gnav .icon-btn.glass { background: rgba(0, 0, 0, 0.92); }
-html.mono-l .sticky-bar, html.mono-l .tabbar, html.mono-l .tabs.stuck, html.mono-l .gnav .icon-btn.glass { background: rgba(255, 255, 255, 0.94); }
-html.mono-d .field-card { background: #111; } html.mono-l .field-card { background: #eee; }
+/* 引き算のデザインの白黒（ひび手帳のモノクロモード） */
+html.mono-l body { background: #fff; }
+html.mono-l .sticky-bar, html.mono-l .tabs.stuck { background: rgba(255, 255, 255, 0.85); }
+html.mono-l .seg { background: #eeeeef; }
+html.mono-l .seg > .on { background: #fff; color: #000; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
+html.mono-l .hero { background: #fff; }
+html.mono-l .hero::after { background: linear-gradient(transparent, #fff); }
+html.mono-l .tabbar { background: rgba(255, 255, 255, 0.8); }
+html.mono-l .tabbar a { color: #8e8e93; }
+html.mono-l .icon-btn.glass { background: rgba(0, 0, 0, 0.06); }
+html.mono-l .sheet { background: #fff; }
+html.mono-l .dp-btn.ghost { background: #eee; }
+html.mono-l table.stat th, html.mono-l table.stat th.nm, html.mono-l table.stat .nm, html.mono-l table.stat tbody tr:nth-child(even) td, html.mono-l table.stat tbody tr:nth-child(even) td.nm { background: var(--card); }
+html.mono-d .gc.live::before, html.mono-l .gc.live::before { background: var(--text); }
+.gc-head .pill.pre { display: none; }
+html.mono-l .pill.live { color: #000 !important; } html.mono-d .pill.live { color: #fff !important; }
