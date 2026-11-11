@@ -19,6 +19,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&display=swap">
   <link rel="stylesheet" href="styles.css">
+  <!-- 試作の見た目（?look=js のときだけ。ふだんは読みこまない） -->
+  <script>(function(){try{var q=new URLSearchParams(location.search).get('look');if(q!==null)sessionStorage.setItem('look',q);if((q||sessionStorage.getItem('look'))==='js'){document.documentElement.classList.add('look-js');document.write('<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500&family=Shippori+Mincho:wght@500;600&display=swap"><link rel="stylesheet" href="look-js.css">');}}catch(e){}})();</script>
   <!-- ひび手帳の中で開いたとき：シートはもうステータスバーの下にあるので、上の切り欠きぶんの空白をあけない -->
   <script>if (window.parent !== window) document.documentElement.classList.add('in-frame');</script>
 <script>

@@ -1,0 +1,122 @@
+/* ===================================================================
+   試作：J-Startup のサイトを参考にした見た目（?look=js のときだけ）
+   白い地・黒・日の丸の赤。英字は細い幾何学の Outfit、日本語の見出しは明朝（しっぽり明朝）
+   大きな弧・細い赤い円・「1 / 4」のような数え方・広い余白
+   =================================================================== */
+html.look-js {
+  --bg: #fff; --bg-2: #fff; --card: #fff; --card-2: #f5f5f5; --card-3: #e8e8e8;
+  --line: #e6e6e6; --line-2: #d4d4d4;
+  --text: #000; --text-2: #5a5a5a; --text-3: #9b9b9b;
+  --accent: #e60012; --accent-2: #e60012; --accent-ink: #fff;
+  --live: #e60012; --jp: #000;
+  --num: "Outfit", -apple-system, sans-serif; --cond: "Outfit", sans-serif;
+  --min: "Shippori Mincho", "Hiragino Mincho ProN", serif;
+  color-scheme: light;
+}
+html.look-js body { background: #fff; color: #000; }
+html.look-js body::before { display: none; }
+
+/* 見出し：上に黒い弧と赤い斜めの帯、英字は細く、日本語は明朝 */
+html.look-js .lt { position: relative; padding: calc(var(--safe-top) + 26px) 22px 22px; color: #fff; overflow: hidden; isolation: isolate; }
+html.look-js .lt::before { content: ""; position: absolute; inset: 0 -40% 0 -10%; z-index: -1; background: #000; border-radius: 0 0 50% 50% / 0 0 34% 18%; }
+html.look-js .lt::after { content: ""; position: absolute; z-index: -1; right: -30%; top: -40%; width: 80%; height: 110%; background: #e60012; transform: rotate(-14deg); border-radius: 0 0 0 60% / 0 0 0 40%; }
+html.look-js .lt h1 { font-family: var(--min); font-weight: 500; font-size: 34px; letter-spacing: 0.06em; color: #fff; }
+html.look-js .kicker { font-family: "Outfit", sans-serif; font-weight: 300; font-size: 15px; letter-spacing: 0.04em; color: #fff; text-transform: none; margin-bottom: 8px; }
+html.look-js .lt-sub { color: rgba(255, 255, 255, 0.75); font-family: "Outfit", -apple-system, sans-serif; font-weight: 300; }
+html.look-js .today-tag { color: rgba(255, 255, 255, 0.75); }
+html.look-js .today-link { color: #fff; text-decoration: underline 1px; text-underline-offset: 4px; }
+html.look-js .live-cnt { color: #fff; font-family: "Outfit", sans-serif; font-weight: 400; }
+html.look-js .live-cnt .dot { color: #fff; }
+html.look-js .icon-btn, html.look-js .icon-btn.glass { background: transparent; border: 1px solid rgba(255, 255, 255, 0.7); color: #fff; }
+
+/* 日付：細い数字、選んだ日は細い赤い円で囲む */
+html.look-js .sticky-bar { background: rgba(255, 255, 255, 0.92); border-bottom: 1px solid var(--line); }
+html.look-js .day .dw { font-size: 10px; color: var(--text-3); }
+html.look-js .day .dd { font-family: "Outfit", sans-serif; font-weight: 300; font-size: 22px; color: var(--text-3); }
+html.look-js .day.today .dd { color: #000; }
+html.look-js .day.on::before { left: 50%; top: 50%; bottom: auto; right: auto; width: 46px; height: 46px; margin: -18px 0 0 -23px; background: none; border: 1px solid #e60012; border-radius: 50%; }
+html.look-js .day.on .dd { color: #e60012; font-weight: 400; }
+html.look-js .day.on .dw { color: #e60012; }
+
+/* 切り替え：箱なし、選んだものに赤い線 */
+html.look-js .seg { background: none; border-radius: 0; padding: 0; gap: 18px; }
+html.look-js .seg > a, html.look-js .seg > button { flex: none; padding: 8px 0; border-radius: 0; font-size: 13.5px; color: var(--text-3); }
+html.look-js .seg > .on { background: none; color: #000; box-shadow: inset 0 -1px 0 #e60012; }
+html.look-js .tabs .seg > a { flex: 1; }
+html.look-js .tabs.stuck { background: rgba(255, 255, 255, 0.92); box-shadow: 0 1px 0 var(--line); }
+
+/* セクション見出し：明朝と細い番号 */
+html.look-js .sec-title { font-family: var(--min); font-weight: 500; font-size: 17px; color: #000; letter-spacing: 0.06em; margin: 34px 2px 4px; }
+html.look-js .sec-title .cnt { font-family: "Outfit", sans-serif; font-weight: 300; color: var(--text-3); font-size: 13px; }
+html.look-js .sec-title .cnt::before { content: "— "; }
+html.look-js .sec { counter-increment: sec; }
+html.look-js .list { counter-reset: sec; }
+body[data-nav="games"].x, html.look-js body[data-nav="games"] .list .sec-title::before { content: counter(sec, decimal-leading-zero); font-family: "Outfit", sans-serif; font-weight: 300; font-size: 12px; color: #e60012; margin-right: 6px; letter-spacing: 0.08em; }
+
+/* 試合：箱をやめて、細い線で区切る一覧 */
+html.look-js .cards { gap: 0; }
+html.look-js .gc { background: none; border-radius: 0; padding: 18px 2px 18px; border-bottom: 1px solid var(--line); }
+html.look-js .gc:active { background: #fafafa; }
+html.look-js .gc.live::before { height: 0; }
+html.look-js .gc.live { box-shadow: inset 2px 0 0 #e60012; padding-left: 14px; }
+html.look-js .gc-head .venue, html.look-js .tag { color: var(--text-3); font-size: 11.5px; }
+html.look-js .gc-team .tb { --s: 20px; font-size: 10px; }
+html.look-js .gc-team .nm { font-weight: 500; font-size: 15.5px; }
+html.look-js .gc-team .rec { font-family: "Outfit", sans-serif; font-weight: 300; }
+html.look-js .gc-team .sc { font-family: "Outfit", sans-serif; font-weight: 300; font-size: 34px; color: #000; }
+html.look-js .gc-team.lose .nm, html.look-js .gc-team.lose .sc { color: #b5b5b5; }
+html.look-js .gc-time b { font-family: "Outfit", sans-serif; font-weight: 300; font-size: 26px; }
+html.look-js .gc-outs i.on { background: #e60012; border-color: #e60012; }
+html.look-js .gc-foot { border-top: 0; padding-top: 4px; color: var(--text-2); }
+html.look-js .pill { font-family: "Outfit", -apple-system, sans-serif; font-weight: 400; color: var(--text-3); }
+html.look-js .pill.live { color: #e60012; }
+html.look-js .pill.pre { color: #000; font-weight: 300; }
+
+/* 下のバー：白く、細い線だけ */
+html.look-js .tabbar { left: 0; right: 0; bottom: 0; height: calc(60px + var(--safe-bottom)); padding-bottom: var(--safe-bottom); border-radius: 0; background: rgba(255, 255, 255, 0.94); border: 0; border-top: 1px solid var(--line); box-shadow: none; }
+html.look-js .tabbar a { color: var(--text-3); font-weight: 400; }
+html.look-js .tabbar a.on { color: #e60012; }
+
+/* 試合の画面の上：黒い弧と赤い帯、点数のうしろに細い赤い円 */
+html.look-js .hero { background: #fff; color: #000; padding: calc(var(--safe-top) + 108px) 20px 30px; }
+html.look-js .hero::before { content: ""; position: absolute; z-index: 0; left: -10%; right: -40%; top: -40px; height: 130px; background: #000; border-radius: 0 0 50% 50% / 0 0 80% 30%; pointer-events: none; }
+html.look-js .hero::after { inset: -80px -30% auto auto; width: 70%; height: 170px; background: #e60012; transform: rotate(-12deg); border-radius: 0 0 0 70% / 0 0 0 50%; z-index: 0; }
+html.look-js .hero-main { position: relative; }
+html.look-js .hero-mid { position: relative; }
+html.look-js .hero-mid::before { content: ""; position: absolute; left: 50%; top: 50%; width: 150px; height: 150px; margin: -82px 0 0 -75px; border: 1px solid #e60012; border-radius: 50%; pointer-events: none; }
+html.look-js .hero-series { position: relative; color: #000; font-family: var(--min); font-weight: 500; letter-spacing: 0.1em; margin: 0 0 26px; }
+html.look-js .hero-ha { font-family: "Outfit", sans-serif; font-weight: 300; color: var(--text-3); letter-spacing: 0.12em; font-size: 12px; text-transform: none; }
+html.look-js .hero-nm { font-family: var(--min); font-weight: 600; font-size: 16px; color: #000; }
+html.look-js .hero-team.lose .hero-nm { color: #b5b5b5; }
+html.look-js .hero-score b { font-family: "Outfit", sans-serif; font-weight: 200; font-size: 80px; color: #c4c4c4; }
+html.look-js .hero-score b.w { color: #000; }
+html.look-js .hero-score span { width: 1px; height: 54px; background: #000; transform: rotate(20deg); }
+html.look-js .hero-vs { font-family: "Outfit", sans-serif; font-weight: 200; color: #000; }
+html.look-js .hero-meta { color: var(--text-2); font-family: "Outfit", -apple-system, sans-serif; font-weight: 300; }
+html.look-js .gnav .icon-btn { border-color: rgba(255, 255, 255, 0.8); }
+
+/* 面と表 */
+html.look-js .card { background: #fff; border: 1px solid var(--line); border-radius: 0; }
+html.look-js .ls-card { border-color: #000; border-width: 1px 0; }
+html.look-js .ls td { font-family: "Outfit", sans-serif; font-weight: 300; color: var(--text-2); }
+html.look-js .ls td.r { font-weight: 500; color: #000; }
+html.look-js .ls td.cur { color: #e60012; box-shadow: inset 0 -1px 0 #e60012; }
+html.look-js table.stat, html.look-js .ls { font-family: "Outfit", -apple-system, sans-serif; }
+html.look-js table.stat td { font-weight: 300; }
+html.look-js table.stat th, html.look-js table.stat th.nm, html.look-js table.stat .nm, html.look-js table.stat tbody tr:nth-child(even) td, html.look-js table.stat tbody tr:nth-child(even) td.nm { background: #fff; }
+html.look-js table.stat .nm { font-weight: 500; }
+html.look-js table.stat tr.total td { background: #f6f6f6 !important; }
+html.look-js .stand td.rank { font-family: "Outfit", sans-serif; font-weight: 200; font-size: 22px; color: var(--text-3); }
+html.look-js .stand td.rank.top { color: #e60012; }
+html.look-js .board-t { font-family: var(--min); font-size: 15px; color: #000; }
+html.look-js .medal { color: #e60012; font-weight: 300; }
+html.look-js .bt-val { font-family: "Outfit", sans-serif; font-weight: 200; font-size: 48px; color: #000; }
+html.look-js .br-val, html.look-js .br-rank { font-family: "Outfit", sans-serif; font-weight: 300; }
+html.look-js .board-more { color: #e60012; }
+html.look-js .sheet { background: #fff; }
+html.look-js .dp-day.on { background: none; color: #e60012 !important; box-shadow: inset 0 0 0 1px #e60012; }
+html.look-js .dp-btn { background: #000; color: #fff; border-radius: 0; }
+html.look-js .dp-btn.ghost { background: #fff; color: #000; border: 1px solid #000; }
+html.look-js .field-card { background: #0d1a10; }
+html.look-js .cc.today .cd { background: #e60012; color: #fff !important; }
+html.look-js .cr.win { color: #e60012; }
